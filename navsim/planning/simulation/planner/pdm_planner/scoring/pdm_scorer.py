@@ -1,4 +1,5 @@
 import copy
+import os
 from dataclasses import dataclass
 from typing import List, Optional
 
@@ -137,6 +138,7 @@ class PDMScorer:
         map_parameters: Optional[MapParameters] = None,
         simulated_agent_detections_tracks: Optional[List[DetectionsTracks]] = None,
         human_past_trajectory: Optional[InterpolatedTrajectory] = None,
+        if_return_pdms = False
     ) -> List[pd.DataFrame]:
         """
         TODO: Update this docstring
@@ -182,6 +184,7 @@ class PDMScorer:
         multiplicative_metrics_prods, weighted_metrics_all = self._multi_metrics.prod(axis=0), self._weighted_metrics
 
         results: List[pd.DataFrame] = []
+        pdms = []
         for proposal_idx in range(self._num_proposals):
 
             no_at_fault_collisions = self._multi_metrics[MultiMetricIndex.NO_COLLISION, proposal_idx]
@@ -218,6 +221,9 @@ class PDMScorer:
                     ]
                 )
             )
+            pdms.append(pdm_score)
+        if if_return_pdms:
+            return results, pdms
         return results
 
     def _aggregate_pdm_scores(self) -> npt.NDArray[np.float64]:
@@ -230,11 +236,32 @@ class PDMScorer:
 
         # normalize and fill progress values
         masked_progress = self._progress_raw * multiplicate_metric_scores
-        norm_constant_progress = np.max(masked_progress)
-        if norm_constant_progress > self._config.progress_distance_threshold:
-            normalized_progress = np.clip(self._progress_raw / norm_constant_progress, 0.0, 1.0)
+
+        if os.environ.get('PROGRESS_MODE', 'eval') == 'gen_gt':
+            print('Using gen_gt mode for ep!')
+            N = masked_progress.shape[0]
+            pdm_progress = np.repeat(masked_progress[0], N)[..., None]
+            combined_progress = np.concatenate([masked_progress[..., None], pdm_progress], axis=1)
+            max_raw_progress = np.max(
+                combined_progress,
+                axis=1
+            )
+            # three cases:
+            # 1. bigger than t ---------- normalize
+            # 2. smaller than t & score!=0 -------- 1
+            # 3. smaller than t & score==0 -------- 0
+            bigger_than_t_mask = max_raw_progress > self._config.progress_distance_threshold
+            normalized_progress = np.ones_like(masked_progress)
+            normalized_progress[bigger_than_t_mask] = masked_progress[bigger_than_t_mask] / max_raw_progress[
+                bigger_than_t_mask]
         else:
-            normalized_progress = np.ones(len(masked_progress), dtype=np.float64)
+            norm_constant_progress = np.max(masked_progress)
+            if norm_constant_progress > self._config.progress_distance_threshold:
+                normalized_progress = np.clip(self._progress_raw / norm_constant_progress, 0.0, 1.0)
+            else:
+                normalized_progress = np.ones(len(masked_progress), dtype=np.float64)
+
+
         self._weighted_metrics[WeightedMetricIndex.PROGRESS] = normalized_progress
 
         # Exclude the two-frame extended comfort metric from the weighted metrics calculation.
@@ -446,7 +473,9 @@ class PDMScorer:
         for proposal_idx in range(self._num_proposals):
             for time_idx in range(self.proposal_sampling.num_poses + 1):
                 ego_position = Point(*center_coordinates[proposal_idx, time_idx])
-                is_in_intersection = self._drivable_area_map.is_in_layer(ego_position, SemanticMapLayer.INTERSECTION)
+                is_in_intersection = self._drivable_area_map.is_in_layer(
+                    ego_position, SemanticMapLayer.INTERSECTION
+                )
                 if not oncoming_traffic_masks[proposal_idx, time_idx] or is_in_intersection:
                     oncoming_progress[proposal_idx, time_idx] = 0.0
 

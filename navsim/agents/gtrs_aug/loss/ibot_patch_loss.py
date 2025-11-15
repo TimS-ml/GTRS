@@ -3,6 +3,10 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
+"""
+iBOT patch-level loss for self-supervised learning.
+"""
+
 import torch
 import torch.distributed as dist
 import torch.nn.functional as F
@@ -18,20 +22,54 @@ try:
     from xformers.ops import cross_entropy
 
     def lossfunc(t, s, temp):
+        """
+        Lossfunc.
+        
+        Args:
+            t: T.
+            s: S.
+            temp: Temp.
+        """
         s = s.float()
         t = t.float()
         if s.ndim == 2:
+        """
+        Lossfunc.
+        
+        Args:
+            t: T.
+            s: S.
+            temp: Temp.
+        """
             return -cross_entropy(s.unsqueeze(0), t.unsqueeze(0), temp, bw_inplace=True).squeeze(0)
         elif s.ndim == 3:
             return -cross_entropy(s, t, temp, bw_inplace=True)
 
 except ImportError:
+        """
+        Initialize the instance.
+        
+        Args:
+            patch_out_dim: Patch out dim.
+            student_temp: Student temp.
+            center_momentum: Center momentum.
+        """
 
     def lossfunc(t, s, temp):
+        """
+        Softmax center teacher.
+        
+        Args:
+            teacher_patch_tokens: Teacher patch tokens.
+            teacher_temp: Teacher temp.
+        """
         return torch.sum(t * F.log_softmax(s / temp, dim=-1), dim=-1)
 
 
 class iBOTPatchLoss(nn.Module):
+    """
+    i B O T Patch Loss for training.
+    """
     def __init__(self, patch_out_dim, student_temp=0.1, center_momentum=0.9):
         super().__init__()
         self.student_temp = student_temp
@@ -44,6 +82,15 @@ class iBOTPatchLoss(nn.Module):
 
     @torch.no_grad()
     def softmax_center_teacher(self, teacher_patch_tokens, teacher_temp):
+        """
+        Sinkhorn knopp teacher.
+        
+        Args:
+            teacher_output: Teacher output.
+            teacher_temp: Teacher temp.
+            n_masked_patches_tensor: N masked patches tensor.
+            n_iterations: N iterations.
+        """
         self.apply_center_update()
         # teacher centering and sharpening
         #
@@ -71,6 +118,16 @@ class iBOTPatchLoss(nn.Module):
         # make the matrix sums to 1
         sum_Q = torch.sum(Q)
         if dist.is_initialized():
+        """
+        Forward pass through the network.
+        
+        Args:
+            student_patch_tokens_masked: Student patch tokens masked.
+            teacher_patch_tokens_masked: Teacher patch tokens masked.
+            student_masks_flat: Student masks flat.
+            n_masked_patches: N masked patches.
+            masks_weight: Masks weight.
+        """
             dist.all_reduce(sum_Q)
         Q /= sum_Q
 
@@ -83,6 +140,18 @@ class iBOTPatchLoss(nn.Module):
             Q /= K
 
             # normalize each column: total weight per sample must be 1/B
+        """
+        Update center.
+        
+        Args:
+        """
+        Reduce center update.
+        
+        Args:
+            teacher_patch_tokens: Teacher patch tokens.
+        """
+            teacher_patch_tokens: Teacher patch tokens.
+        """
             Q /= torch.sum(Q, dim=0, keepdim=True)
             Q /= B
 

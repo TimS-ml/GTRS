@@ -3,6 +3,10 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
+"""
+Distributed training utilities for GTRS augmented agent.
+"""
+
 import os
 import random
 import re
@@ -80,6 +84,8 @@ def _restrict_print_to_main_process() -> None:
     builtin_print = __builtin__.print
 
     def print(*args, **kwargs):
+        """
+        Print."""
         force = kwargs.pop("force", False)
         if is_main_process() or force:
             builtin_print(*args, **kwargs)
@@ -88,6 +94,12 @@ def _restrict_print_to_main_process() -> None:
 
 
 def _get_master_port(seed: int = 0) -> int:
+    """
+     get master port.
+    
+    Args:
+        seed: Seed.
+    """
     MIN_MASTER_PORT, MAX_MASTER_PORT = (20_000, 60_000)
 
     master_port_str = os.environ.get("MASTER_PORT")
@@ -99,6 +111,8 @@ def _get_master_port(seed: int = 0) -> int:
 
 
 def _get_available_port() -> int:
+    """
+     get available port."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # A "" host address means INADDR_ANY i.e. binding to all interfaces.
         # Note this is not compatible with IPv6.
@@ -118,6 +132,8 @@ _TORCH_DISTRIBUTED_ENV_VARS = (
 
 
 def _collect_env_vars() -> Dict[str, str]:
+    """
+     collect env vars."""
     return {env_var: os.environ[env_var] for env_var in _TORCH_DISTRIBUTED_ENV_VARS if env_var in os.environ}
 
 
@@ -134,6 +150,18 @@ def _parse_slurm_node_list(s: str) -> List[str]:
         for suffix in suffixes.split(","):
             span = suffix.split("-")
             if len(span) == 1:
+    """
+     check env variable.
+    
+    Args:
+        """
+        Initialize the instance."""
+        key: Key.
+    """
+    _ Torch Distributed Environment.
+    """
+        new_value: New value.
+    """
                 nodes.append(prefix + suffix)
             else:
                 width = len(span[0])
@@ -158,6 +186,8 @@ class _TorchDistributedEnvironment:
         self.local_world_size = -1
 
         if _is_slurm_job_process():
+        """
+         set from slurm env."""
             return self._set_from_slurm_env()
 
         env_vars = _collect_env_vars()
@@ -171,6 +201,8 @@ class _TorchDistributedEnvironment:
             # Environment is partially set
             collected_env_vars = ", ".join(env_vars.keys())
             raise RuntimeError(f"Partially set environment: {collected_env_vars}")
+        """
+         set from preset env."""
 
         if torch.cuda.device_count() > 0:
             return self._set_from_local()
@@ -196,6 +228,8 @@ class _TorchDistributedEnvironment:
 
     # Single node job with preset environment (i.e. torchrun)
     def _set_from_preset_env(self):
+        """
+         set from local."""
         # logger.info("Initialization from preset environment")
         self.master_addr = os.environ["MASTER_ADDR"]
         self.master_port = os.environ["MASTER_PORT"]

@@ -1,3 +1,7 @@
+"""
+Lidar point cloud visualization utilities.
+"""
+
 from typing import Any, List
 
 import matplotlib

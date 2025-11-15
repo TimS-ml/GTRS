@@ -1,3 +1,7 @@
+"""
+Observation builder implementation.
+"""
+
 from typing import cast
 
 from hydra.utils import instantiate

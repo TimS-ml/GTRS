@@ -1,5 +1,9 @@
 # TODO: Move this file for common usage (not specific for PDM)
 
+"""
+Pdm path implementation.
+"""
+
 from __future__ import annotations
 
 import warnings
@@ -60,6 +64,12 @@ class PDMPath:
         return self._linestring
 
     def project(self, points: Any) -> Any:
+        """
+        Project.
+        
+        Args:
+            points: Points.
+        """
         warnings.filterwarnings(
             "ignore", message="invalid value encountered in line_locate_point", category=RuntimeWarning
         )

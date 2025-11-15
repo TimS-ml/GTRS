@@ -1,4 +1,8 @@
 # TODO: Move & rename this file for common usage (not specific for PDM)
+"""
+Pdm array representation implementation.
+"""
+
 from typing import List
 
 import numpy as np
@@ -247,6 +251,13 @@ def coords_array_to_polygon_array(
 
 def state_array_to_center_state_array(
     state_array: npt.NDArray[np.float64], vehicle_parameters: VehicleParameters
+    """
+    State array to center state array.
+    
+    Args:
+        state_array: State array.
+        vehicle_parameters: Vehicle parameters.
+    """
 ) -> npt.NDArray[np.float64]:
     assert state_array.shape[-1] == StateIndex.size()
 

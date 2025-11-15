@@ -1,3 +1,9 @@
+"""
+Common data structures and utilities.
+
+This module provides dataclass definitions used throughout NAVSIM.
+"""
+
 from __future__ import annotations
 
 import io

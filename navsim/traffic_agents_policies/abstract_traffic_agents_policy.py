@@ -1,3 +1,7 @@
+"""
+Abstract base class for traffic agent behavior policies.
+"""
+
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
@@ -34,6 +38,12 @@ def extract_vehicle_trajectories_from_detections_tracks(
     """
 
     def _state_extractor(scene_object: Agent) -> npt.NDArray[np.float64]:
+        """
+         state extractor.
+        
+        Args:
+            scene_object: Scene object.
+        """
         return np.array(
             [
                 scene_object.center.x,
@@ -51,6 +61,12 @@ def extract_vehicle_trajectories_from_detections_tracks(
         )
 
     def _token_extractor(scene_object: Agent) -> str:
+        """
+         token extractor.
+        
+        Args:
+            scene_object: Scene object.
+        """
         return scene_object.track_token
 
     vehicle_tracks = filter_tracked_objects_by_type(detections_tracks, TrackedObjectType.VEHICLE)
@@ -85,7 +101,27 @@ def extract_vehicle_trajectories_from_detections_tracks(
 
 def filter_tracked_objects_by_type(
     tracked_objects: List[DetectionsTracks], object_type: TrackedObjectType
+    """
+    Filter tracked objects by type.
+    
+    Args:
+        tracked_objects: Tracked objects.
+        object_type: Object type.
+    """
 ) -> List[DetectionsTracks]:
+    """
+    Filter tracked objects by types.
+    
+    Args:
+        """
+        Initialize the instance.
+        
+        Args:
+            future_trajectory_sampling: Future trajectory sampling.
+        """
+        tracked_objects: Tracked objects.
+        object_types: Object types.
+    """
     return [
         DetectionsTracks(TrackedObjects(p.tracked_objects.get_tracked_objects_of_type(object_type)))
         for p in tracked_objects

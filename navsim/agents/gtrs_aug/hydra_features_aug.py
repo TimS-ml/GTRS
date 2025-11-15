@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Hydra features aug implementation.
+"""
+
+"""
+Feature extraction components for Hydra model in GTRS augmented agent.
+"""
+
 import json
 import os
 from enum import IntEnum
@@ -44,7 +52,16 @@ from navsim.planning.training.abstract_feature_target_builder import (
 
 
 class HydraAugFeatureBuilder(AbstractFeatureBuilder):
+    """
+    Hydra Aug Feature Builder for constructing components.
+    """
     def __init__(self, config: HydraConfigAug):
+        """
+        Initialize the instance.
+        
+        Args:
+            config: Config.
+        """
         self._config = config
         self.training = config.training
 
@@ -222,6 +239,12 @@ class HydraAugFeatureBuilder(AbstractFeatureBuilder):
                     resized_image = cv2.resize(rotated_image, (self._config.camera_width, self._config.camera_height))
                     tensor_image = self.student_rotated_augmentation(resized_image)  # [3, h, w]
                     if os.getenv('ROBUST_HYDRA_DEBUG') == 'true':
+        """
+         get camera feature back.
+        
+        Args:
+            agent_input: Agent input.
+        """
                         _img = transforms.ToPILImage()(tensor_image)
                         _img.save(f'{debug_dir}/output_tensor_image_{i}.jpg')
                     res['rotated'][i].append(tensor_image)
@@ -248,6 +271,12 @@ class HydraAugFeatureBuilder(AbstractFeatureBuilder):
         """
         Compute LiDAR feature as 2D histogram, according to Transfuser
         :param agent_input: input dataclass
+            """
+            Splat points.
+            
+            Args:
+                point_cloud: Point cloud.
+            """
         :return: LiDAR histogram as torch tensors
         """
 
@@ -338,6 +367,12 @@ class HydraAugFeatureBuilder(AbstractFeatureBuilder):
 
             # Visualization for debugging
             if os.getenv('ROBUST_HYDRA_DEBUG') == 'true':
+        """
+        Initialize the instance.
+        
+        Args:
+            config: Config.
+        """
                 viz_rotated = (rotated_above_features * 255).astype(np.uint8)
                 cv2.imwrite(f'debug_viz/{i}_pc_rotated_features.jpg', viz_rotated)
 
@@ -351,6 +386,9 @@ class HydraAugFeatureBuilder(AbstractFeatureBuilder):
 
 
 class HydraAugTargetBuilder(AbstractTargetBuilder):
+    """
+    Hydra Aug Target Builder for constructing components.
+    """
     def __init__(self, config: HydraConfigAug):
         self._config = config
         self.v_params = get_pacifica_parameters()
@@ -359,6 +397,15 @@ class HydraAugTargetBuilder(AbstractTargetBuilder):
         config_rotation = config.ego_perturb.rotation
 
         if self.training:
+                """
+                 visualize trajectories.
+                
+                Args:
+                    original_poses: Original poses.
+                    rotated_poses: Rotated poses.
+                    filename: Filename.
+                    traj_name: Traj name.
+                """
             with open(config.ego_perturb.offline_aug_file, 'r') as f:
                 aug_data = json.load(f)
                 assert aug_data['param'][
@@ -441,6 +488,14 @@ class HydraAugTargetBuilder(AbstractTargetBuilder):
                 # Rotate each trajectory point around origin (ego vehicle)
                 rotated_poses = []
                 for pose in future_traj.poses:
+            """
+             xy in lidar.
+            
+            Args:
+                x: X.
+                y: Y.
+                config: Config.
+            """
                     # Rotate x,y coordinates
                     rotated_xy = np_vector2_aug(pose[:2], _reverse_rotation)
                     # Adjust heading and normalize to [-pi, pi]
@@ -659,6 +714,9 @@ class HydraAugTargetBuilder(AbstractTargetBuilder):
 
 
 class BoundingBox2DIndex(IntEnum):
+    """
+    Bounding Box2 D Index.
+    """
     _X = 0
     _Y = 1
     _HEADING = 2
@@ -667,6 +725,8 @@ class BoundingBox2DIndex(IntEnum):
 
     @classmethod
     def size(cls):
+        """
+        Y."""
         valid_attributes = [
             attribute
             for attribute in dir(cls)
@@ -679,11 +739,15 @@ class BoundingBox2DIndex(IntEnum):
     @classmethod
     @property
     def X(cls):
+        """
+        Width."""
         return cls._X
 
     @classmethod
     @property
     def Y(cls):
+        """
+        State se2."""
         return cls._Y
 
     @classmethod
@@ -710,6 +774,13 @@ class BoundingBox2DIndex(IntEnum):
     @classmethod
     @property
     def STATE_SE2(cls):
+    """
+    Np vector2 aug.
+    
+    Args:
+        arr: Arr.
+        angle: Angle.
+    """
         # assumes X, Y, HEADING have subsequent indices
         return slice(cls._X, cls._HEADING + 1)
 

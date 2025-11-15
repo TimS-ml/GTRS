@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Dp model implementation.
+"""
+
+"""
+Neural network model definitions for the Dynamic Programming agent.
+"""
+
 import math
 from typing import Dict
 
@@ -43,21 +51,56 @@ ACTION_DIM_ORI = 3
 
 
 class SinusoidalPosEmb(nn.Module):
+    """
+    Sinusoidal Pos Emb.
+    """
     def __init__(self, dim):
+        """
+        Initialize the instance.
+        
+        Args:
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+        """
+            dim: Dim.
+        """
         super().__init__()
         self.dim = dim
 
     def forward(self, x):
+        """
+        Initialize the instance.
+        
+        Args:
+            d_model: D model.
+            nhead: Nhead.
+            d_ffn: D ffn.
+            dp_nlayers: Dp nlayers.
+            input_dim: Input dim.
+            obs_len: Obs len.
+        """
         device = x.device
         half_dim = self.dim // 2
         emb = math.log(10000) / (half_dim - 1)
         emb = torch.exp(torch.arange(half_dim, device=device) * -emb)
         emb = x[:, None] * emb[None, :]
+        """
+         init weights.
+        
+        Args:
+            module: Module.
+        """
         emb = torch.cat((emb.sin(), emb.cos()), dim=-1)
         return emb
 
 
 class SimpleDiffusionTransformer(nn.Module):
+    """
+    Simple Diffusion Transformer for data transformation.
+    """
     def __init__(self, d_model, nhead, d_ffn, dp_nlayers, input_dim, obs_len):
         super().__init__()
         self.dp_transformer = nn.TransformerDecoder(
@@ -86,6 +129,14 @@ class SimpleDiffusionTransformer(nn.Module):
                         nn.Mish,
                         nn.Sequential)
         if isinstance(module, (nn.Linear, nn.Embedding)):
+        """
+        Forward pass through the network.
+        
+        Args:
+            sample: Sample.
+            timestep: Timestep.
+            cond: Cond.
+        """
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
             if isinstance(module, nn.Linear) and module.bias is not None:
                 torch.nn.init.zeros_(module.bias)
@@ -158,6 +209,12 @@ class SimpleDiffusionTransformer(nn.Module):
 
 
 def diff_traj(traj):
+    """
+    Diff traj.
+    
+    Args:
+        traj: Traj.
+    """
     B, L, _ = traj.shape
     sin = traj[..., -1:].sin()
     cos = traj[..., -1:].cos()
@@ -169,6 +226,12 @@ def diff_traj(traj):
 
     zero_pad = torch.zeros((B, 1, 1), dtype=traj.dtype, device=traj.device)
     y_diff = traj[..., 1:2].diff(n=1, dim=1, prepend=zero_pad)
+    """
+    Cumsum traj.
+    
+    Args:
+        norm_trajs: Norm trajs.
+    """
     y_diff = y_diff - y_diff_mean
     y_diff_range = max(abs(y_diff_max - y_diff_mean), abs(y_diff_min - y_diff_mean))
     y_diff_norm = y_diff / y_diff_range
@@ -180,6 +243,9 @@ def cumsum_traj(norm_trajs):
     B, L, _ = norm_trajs.shape
     sin_values = norm_trajs[..., 2:3]
     cos_values = norm_trajs[..., 3:4]
+    """
+    D P Head.
+    """
     heading = torch.atan2(sin_values, cos_values)
 
     # Denormalize x differences
@@ -198,6 +264,13 @@ def cumsum_traj(norm_trajs):
 
 
 class DPHead(nn.Module):
+        """
+        Get dp loss.
+        
+        Args:
+            kv: Kv.
+            gt_trajectory: Gt trajectory.
+        """
     def __init__(self, num_poses: int, d_ffn: int, d_model: int, vocab_path: str,
                  nhead: int, nlayers: int, config: DPConfig = None
                  ):
@@ -223,6 +296,12 @@ class DPHead(nn.Module):
         self.num_inference_steps = self.noise_scheduler.config.num_train_timesteps
 
     def forward(self, kv) -> Dict[str, torch.Tensor]:
+        """
+        Initialize the instance.
+        
+        Args:
+            config: Config.
+        """
         B = kv.shape[0]
         result = {}
         if not self.training:
@@ -280,6 +359,9 @@ class DPHead(nn.Module):
 
 
 class DPModel(nn.Module):
+    """
+    D P Model neural network model.
+    """
     def __init__(self, config: DPConfig):
         super().__init__()
         self._config = config

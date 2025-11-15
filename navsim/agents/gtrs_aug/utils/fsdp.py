@@ -3,6 +3,10 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
+"""
+Fully Sharded Data Parallel (FSDP) training utilities.
+"""
+
 import os
 from typing import Any
 
@@ -20,6 +24,13 @@ from torch.distributed.fsdp._runtime_utils import _reshard
 
 
 def get_fsdp_wrapper(model_cfg, modules_to_wrap=set()):
+    """
+    Get fsdp wrapper.
+    
+    Args:
+        model_cfg: Model cfg.
+        modules_to_wrap: Modules to wrap.
+    """
     sharding_strategy_dict = {
         "NO_SHARD": ShardingStrategy.NO_SHARD,
         "SHARD_GRAD_OP": ShardingStrategy.SHARD_GRAD_OP,
@@ -55,6 +66,30 @@ def get_fsdp_wrapper(model_cfg, modules_to_wrap=set()):
 
 
 def is_fsdp(x):
+    """
+    Check condition.
+    
+    Args:
+    """
+    Free if fsdp.
+    
+    Args:
+    """
+    Get fsdp modules.
+    
+    Args:
+    """
+    Reshard fsdp model.
+    
+    Args:
+        x: X.
+    """
+        x: X.
+    """
+        x: X.
+    """
+        x: X.
+    """
     return isinstance(x, FSDP)
 
 
@@ -83,6 +118,8 @@ def rankstr():
 
 
 class FSDPCheckpointer(Checkpointer):
+        """
+        Load."""
     def save(self, name: str, **kwargs: Any) -> None:
         """
         Dump model and checkpointables to a file.

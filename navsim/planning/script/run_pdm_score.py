@@ -1,3 +1,7 @@
+"""
+Run pdm score implementation.
+"""
+
 import logging
 import os
 import traceback
@@ -292,6 +296,14 @@ def calculate_individual_mapping_scores(
 
 def create_scene_aggregators(
     all_mappings: Dict[Tuple[str, str], List[Tuple[str, str]]],
+    """
+    Create scene aggregators.
+    
+    Args:
+        all_mappings: All mappings.
+        full_score_df: Full score df.
+        proposal_sampling: Proposal sampling.
+    """
     full_score_df: pd.DataFrame,
     proposal_sampling: TrajectorySampling,
 ) -> pd.DataFrame:

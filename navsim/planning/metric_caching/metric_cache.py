@@ -1,3 +1,7 @@
+"""
+Metric cache implementation.
+"""
+
 from __future__ import annotations
 
 import lzma
@@ -21,6 +25,9 @@ from navsim.planning.simulation.planner.pdm_planner.utils.pdm_path import PDMPat
 
 @dataclass
 class MapParameters:
+    """
+    Map Parameters.
+    """
     map_root: str
     map_version: str
     map_name: str

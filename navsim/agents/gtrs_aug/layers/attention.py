@@ -7,6 +7,10 @@
 #   https://github.com/facebookresearch/dino/blob/master/vision_transformer.py
 #   https://github.com/rwightman/pytorch-image-models/tree/master/timm/models/vision_transformer.py
 
+"""
+Attention mechanism implementations for GTRS augmented agent.
+"""
+
 import logging
 import os
 import warnings
@@ -34,12 +38,32 @@ except ImportError:
 
 
 class Attention(nn.Module):
+    """
+    Attention mechanism.
+    """
     def __init__(
         self,
         dim: int,
+        """
+        Initialize the instance.
+        
+        Args:
+            dim: Dim.
+            num_heads: Num heads.
+            qkv_bias: Qkv bias.
+            proj_bias: Proj bias.
+            attn_drop: Attn drop.
+            proj_drop: Proj drop.
+        """
         num_heads: int = 8,
         qkv_bias: bool = False,
         proj_bias: bool = True,
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+        """
         attn_drop: float = 0.0,
         proj_drop: float = 0.0,
     ) -> None:
@@ -54,6 +78,13 @@ class Attention(nn.Module):
         self.proj_drop = nn.Dropout(proj_drop)
 
     def forward(self, x: Tensor) -> Tensor:
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+            attn_bias: Attn bias.
+        """
         B, N, C = x.shape  # [b, n, c]
         qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         # [b, n, 3, nhead, c//nhead] -> [3, b, nhead, n, c//nhead]
@@ -72,6 +103,9 @@ class Attention(nn.Module):
 
 
 class MemEffAttention(Attention):
+    """
+    Mem Eff Attention mechanism.
+    """
     def forward(self, x: Tensor, attn_bias=None) -> Tensor:
         if not XFORMERS_AVAILABLE:
             if attn_bias is not None:

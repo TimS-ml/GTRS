@@ -3,6 +3,10 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
+"""
+DINO (self-distillation) head for self-supervised learning.
+"""
+
 import torch
 import torch.nn as nn
 from torch.nn.init import trunc_normal_
@@ -10,6 +14,9 @@ from torch.nn.utils import weight_norm
 
 
 class DINOHead(nn.Module):
+    """
+    D I N O Head.
+    """
     def __init__(
         self,
         in_dim,
@@ -20,6 +27,30 @@ class DINOHead(nn.Module):
         bottleneck_dim=256,
         mlp_bias=True,
     ):
+        """
+        Initialize the instance.
+        
+        Args:
+            in_dim: In dim.
+        """
+         init weights.
+        
+        Args:
+            m: M.
+        """
+            out_dim: Out dim.
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+        """
+            use_bn: Use bn.
+            nlayers: Nlayers.
+            hidden_dim: Hidden dim.
+            bottleneck_dim: Bottleneck dim.
+            mlp_bias: Mlp bias.
+        """
         super().__init__()
         nlayers = max(nlayers, 1)
         self.mlp = _build_mlp(nlayers, in_dim, bottleneck_dim, hidden_dim=hidden_dim, use_bn=use_bn, bias=mlp_bias)
@@ -42,6 +73,17 @@ class DINOHead(nn.Module):
 
 
 def _build_mlp(nlayers, in_dim, bottleneck_dim, hidden_dim=None, use_bn=False, bias=True):
+    """
+     build mlp.
+    
+    Args:
+        nlayers: Nlayers.
+        in_dim: In dim.
+        bottleneck_dim: Bottleneck dim.
+        hidden_dim: Hidden dim.
+        use_bn: Use bn.
+        bias: Bias.
+    """
     if nlayers == 1:
         return nn.Linear(in_dim, bottleneck_dim, bias=bias)
     else:

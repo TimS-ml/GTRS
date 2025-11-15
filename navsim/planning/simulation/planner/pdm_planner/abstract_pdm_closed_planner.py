@@ -1,3 +1,7 @@
+"""
+Abstract pdm closed planner implementation.
+"""
+
 from typing import List, Optional
 
 import numpy as np

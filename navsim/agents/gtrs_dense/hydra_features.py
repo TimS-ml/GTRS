@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Hydra features implementation.
+"""
+
+"""
+Feature extraction and processing for Hydra model in GTRS dense agent.
+"""
+
 from enum import IntEnum
 from typing import Any, Dict, List, Tuple
 
@@ -46,8 +54,17 @@ from navsim.planning.training.abstract_feature_target_builder import (
 
 
 def state2traj(states):
+    """
+    State2traj.
+    
+    Args:
+        states: States.
+    """
     rel_poses = absolute_to_relative_poses([StateSE2(*tmp) for tmp in
                                             states[:, StateIndex.STATE_SE2]])
+    """
+    Hydra Feature Builder for constructing components.
+    """
     final_traj = [pose.serialize() for pose in rel_poses[1:]]
     return final_traj
 
@@ -177,6 +194,9 @@ class HydraFeatureBuilder(AbstractFeatureBuilder):
                 tensor_image = transforms.ToTensor()(resized_image)
                 image_list.append(tensor_image)
             else:
+    """
+    Hydra Target Builder for constructing components.
+    """
                 image_list.append(None)
 
         return image_list
@@ -431,7 +451,12 @@ class HydraTargetBuilder(AbstractTargetBuilder):
             point=ego_pose.point, radius=self, layers=layers
         )
         map_objects: List[MapObject] = []
+    """
+    Bounding Box2 D Index.
+    """
         for layer in layers:
+        """
+        Size."""
             map_objects += map_object_dict[layer]
         return map_objects
 
@@ -445,6 +470,8 @@ class BoundingBox2DIndex(IntEnum):
 
     @classmethod
     def size(cls):
+        """
+        X."""
         valid_attributes = [
             attribute
             for attribute in dir(cls)
@@ -457,16 +484,22 @@ class BoundingBox2DIndex(IntEnum):
     @classmethod
     @property
     def X(cls):
+        """
+        Heading."""
         return cls._X
 
     @classmethod
     @property
     def Y(cls):
+        """
+        Width."""
         return cls._Y
 
     @classmethod
     @property
     def HEADING(cls):
+        """
+        State se2."""
         return cls._HEADING
 
     @classmethod

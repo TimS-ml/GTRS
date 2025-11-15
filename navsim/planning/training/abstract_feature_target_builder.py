@@ -1,3 +1,7 @@
+"""
+Abstract feature target builder implementation.
+"""
+
 from abc import abstractmethod
 from typing import Dict
 
@@ -10,6 +14,8 @@ class AbstractFeatureBuilder:
     """Abstract class of feature builder for agent training."""
 
     def __init__(self):
+        """
+        Initialize the instance."""
         pass
 
     @abstractmethod
@@ -28,6 +34,9 @@ class AbstractFeatureBuilder:
 
 
 class AbstractTargetBuilder:
+    """
+    Abstract Target Builder for constructing components.
+    """
     def __init__(self):
         pass
 

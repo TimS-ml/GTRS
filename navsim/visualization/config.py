@@ -1,3 +1,7 @@
+"""
+Configuration for visualization tools.
+"""
+
 from typing import Any, Dict
 
 from nuplan.common.actor_state.tracked_objects_types import TrackedObjectType

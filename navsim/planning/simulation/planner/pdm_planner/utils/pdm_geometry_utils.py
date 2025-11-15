@@ -1,5 +1,9 @@
 # TODO: Move & rename this file for common usage (not specific for PDM)
 
+"""
+Pdm geometry utils implementation.
+"""
+
 from typing import List
 
 import numpy as np

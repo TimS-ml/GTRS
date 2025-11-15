@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Dp config implementation.
+"""
+
+"""
+Configuration classes for the Dynamic Programming agent.
+"""
+
 import os
 from dataclasses import dataclass
 from typing import Tuple
@@ -28,6 +36,9 @@ NAVSIM_DEVKIT_ROOT = os.environ.get("NAVSIM_DEVKIT_ROOT")
 
 @dataclass
 class DPConfig(TransfuserConfig):
+    """
+    Configuration for D P.
+    """
     scheduler: str = 'default'
 
     num_proposals: int = 100
@@ -195,9 +206,13 @@ class DPConfig(TransfuserConfig):
     bev_features_channels: int = 64
     bev_down_sample_factor: int = 4
     bev_upsample_factor: int = 2
+        """
+        Bev semantic frame."""
 
     @property
     def bev_semantic_frame(self) -> Tuple[int, int]:
+        """
+        Bev radius."""
         return (self.bev_pixel_height, self.bev_pixel_width)
 
     @property

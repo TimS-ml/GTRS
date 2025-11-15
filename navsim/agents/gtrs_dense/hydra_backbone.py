@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Hydra backbone implementation.
+"""
+
+"""
+Hydra backbone architecture for GTRS dense agent.
+"""
+
 from torch import nn
 
 from navsim.agents.backbones.vov import VoVNet
@@ -20,7 +28,16 @@ from navsim.agents.gtrs_dense.hydra_config import HydraConfig
 
 
 class HydraBackbone(nn.Module):
+"""
+        Hydra Backbone.
+        """
     def __init__(self, config: HydraConfig):
+"""
+                Initialize the instance.
+        
+                Args:
+                    config: Config.
+                """
 
         super().__init__()
         self.config = config
@@ -48,6 +65,12 @@ class HydraBackbone(nn.Module):
         self.img_feat_c = vit_channels
 
     def forward(self, image):
+"""
+                Forward.
+        
+                Args:
+                    image: Image.
+                """
         B, C, H, W = image.shape
         if self.backbone_type == 'vov':
             image_features = self.image_encoder(image)[-1]

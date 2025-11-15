@@ -1,3 +1,7 @@
+"""
+Run pdm score one stage implementation.
+"""
+
 import logging
 import os
 import traceback
@@ -199,6 +203,14 @@ def compute_final_scores(pdm_score_df: pd.DataFrame) -> pd.DataFrame:
 
 def create_scene_aggregators(
     all_mappings: Dict[str, str],
+    """
+    Create scene aggregators.
+    
+    Args:
+        all_mappings: All mappings.
+        full_score_df: Full score df.
+        proposal_sampling: Proposal sampling.
+    """
     full_score_df: pd.DataFrame,
     proposal_sampling: TrajectorySampling,
 ) -> pd.DataFrame:

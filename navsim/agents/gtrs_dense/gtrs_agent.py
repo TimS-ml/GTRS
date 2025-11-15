@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Gtrs agent implementation.
+"""
+
+"""
+GTRS dense agent implementation for trajectory prediction.
+"""
+
 import os
 import pickle
 from typing import Any, Union
@@ -39,6 +47,12 @@ from navsim.planning.training.abstract_feature_target_builder import (
 
 
 def three_to_two_classes(x):
+    """
+    Three to two classes.
+    
+    Args:
+        x: X.
+    """
     x[x == 0.5] = 0.0
     return x
 
@@ -156,6 +170,9 @@ def hydra_kd_imi_agent_loss_dropout(
 
 
 class GTRSAgent(AbstractAgent):
+    """
+    G T R S Agent implementation.
+    """
     def __init__(
             self,
             config: HydraConfig,
@@ -227,12 +244,32 @@ class GTRSAgent(AbstractAgent):
         )
 
     def get_target_builders(self) -> List[AbstractTargetBuilder]:
+        """
+        Get target builders."""
         return [HydraTargetBuilder(config=self._config)]
 
     def get_feature_builders(self) -> List[AbstractFeatureBuilder]:
+        """
+        Forward pass through the network.
+        
+        Args:
+        """
+        Compute loss.
+        
+        Args:
+            features: Features.
+            targets: Targets.
+            predictions: Predictions.
+            tokens: Tokens.
+        """
+            features: Features.
+            interpolated_traj: Interpolated traj.
+        """
         return [HydraFeatureBuilder(config=self._config)]
 
     def forward(self, features: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+        """
+        Get optimizers."""
         return self.model(features)
 
     def evaluate_dp_proposals(self, features: Dict[str, torch.Tensor], dp_proposals) -> Dict[str, torch.Tensor]:
@@ -259,6 +296,8 @@ class GTRSAgent(AbstractAgent):
                                                three2two=self._config.three2two)
 
     def get_optimizers(self) -> Union[Optimizer, Dict[str, Union[Optimizer, LRScheduler]]]:
+        """
+        Get training callbacks."""
         backbone_params_name = '_backbone.image_encoder'
         img_backbone_params = list(
             filter(lambda kv: backbone_params_name in kv[0], self.model.named_parameters()))

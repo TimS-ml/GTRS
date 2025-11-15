@@ -1,3 +1,7 @@
+"""
+Batch idm policy implementation.
+"""
+
 from typing import List, Union
 
 import numpy as np

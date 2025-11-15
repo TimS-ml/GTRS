@@ -1,3 +1,7 @@
+"""
+Neural network model for Transfuser agent.
+"""
+
 from typing import Dict
 
 import numpy as np

@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Agent lightning module aug implementation.
+"""
+
+"""
+Agent lightning module aug implementation.
+"""
+
 import os
 from typing import Dict, Tuple
 
@@ -116,11 +124,22 @@ class AgentLightningModuleAug(pl.LightningModule):
         return self._step(batch, "train")
 
     def on_train_start(self):
+        """
+        On train start."""
         self.agent.model.train()
 
     def optimizer_step(
             self,
             epoch: int,
+        """
+        Optimizer step.
+        
+        Args:
+            epoch: Epoch.
+            batch_idx: Batch idx.
+            optimizer: Optimizer.
+            optimizer_closure: Optimizer closure.
+        """
             batch_idx: int,
             optimizer,
             optimizer_closure=None,
@@ -150,6 +169,13 @@ class AgentLightningModuleAug(pl.LightningModule):
         """
         Step called on validation samples
         :param batch: tuple of dictionaries for feature and target tensors (batched)
+        """
+        Predict step.
+        
+        Args:
+            batch: Batch.
+            batch_idx: Batch idx.
+        """
         :param batch_idx: index of batch (ignored)
         :return: scalar loss
         """

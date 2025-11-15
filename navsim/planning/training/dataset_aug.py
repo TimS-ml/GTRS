@@ -1,3 +1,7 @@
+"""
+Dataset aug implementation.
+"""
+
 import gzip
 import logging
 import os
@@ -135,9 +139,25 @@ class CacheOnlyDataset(torch.utils.data.Dataset):
 
 
 class DatasetAug(torch.utils.data.Dataset):
+    """
+    Dataset Aug for data loading.
+    """
     def __init__(
             self,
             scene_loader: SceneLoader,
+        """
+        Initialize the instance.
+        
+        Args:
+            scene_loader: Scene loader.
+            feature_builders: Feature builders.
+            target_builders: Target builders.
+            cfg: Cfg.
+            cache_path: Cache path.
+            force_cache_computation: Force cache computation.
+            append_token_to_batch: Append token to batch.
+            agent_input_only: Agent input only.
+        """
             feature_builders: List[AbstractFeatureBuilder],
             target_builders: List[AbstractTargetBuilder],
             cfg: HydraConfigAug,

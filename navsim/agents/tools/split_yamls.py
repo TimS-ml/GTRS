@@ -1,9 +1,20 @@
+"""
+YAML configuration file splitting utilities.
+"""
+
 import os
 
 import yaml
 
 
 def quoted_presenter(dumper, data):
+    """
+    Quoted presenter.
+    
+    Args:
+        dumper: Dumper.
+        data: Data.
+    """
     return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"')
 
 

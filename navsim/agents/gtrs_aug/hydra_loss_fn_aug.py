@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Hydra loss fn aug implementation.
+"""
+
+"""
+Loss functions for training the Hydra model in GTRS augmented agent.
+"""
+
 from typing import Dict
 
 import torch
@@ -264,5 +272,11 @@ def hydra_kd_imi_agent_loss_single_stage(
 
 
 def three_to_two_classes(x):
+    """
+    Three to two classes.
+    
+    Args:
+        x: X.
+    """
     x[x == 0.5] = 0.0
     return x

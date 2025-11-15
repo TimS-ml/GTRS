@@ -1,5 +1,9 @@
 # TODO: Move & rename this file for common usage (not specific for PDM)
 # TODO: Remove @classmethod + @property decorators (deprecated in Python 3.13)
+"""
+Pdm enums implementation.
+"""
+
 from enum import IntEnum
 
 
@@ -20,6 +24,8 @@ class StateIndex:
 
     @classmethod
     def size(cls):
+        """
+        Size."""
         valid_attributes = [
             attribute
             for attribute in dir(cls)
@@ -30,61 +36,85 @@ class StateIndex:
     @classmethod
     @property
     def X(cls):
+        """
+        X."""
         return cls._X
 
     @classmethod
     @property
     def Y(cls):
+        """
+        Y."""
         return cls._Y
 
     @classmethod
     @property
     def HEADING(cls):
+        """
+        Heading."""
         return cls._HEADING
 
     @classmethod
     @property
     def VELOCITY_X(cls):
+        """
+        Velocity y."""
         return cls._VELOCITY_X
 
     @classmethod
     @property
     def VELOCITY_Y(cls):
+        """
+        Acceleration x."""
         return cls._VELOCITY_Y
 
     @classmethod
     @property
     def ACCELERATION_X(cls):
+        """
+        Steering angle."""
         return cls._ACCELERATION_X
 
     @classmethod
     @property
     def ACCELERATION_Y(cls):
+        """
+        Steering rate."""
         return cls._ACCELERATION_Y
 
     @classmethod
     @property
     def STEERING_ANGLE(cls):
+        """
+        Angular velocity."""
         return cls._STEERING_ANGLE
 
     @classmethod
     @property
     def STEERING_RATE(cls):
+        """
+        Point."""
         return cls._STEERING_RATE
 
     @classmethod
     @property
     def ANGULAR_VELOCITY(cls):
+        """
+        State se2."""
         return cls._ANGULAR_VELOCITY
 
     @classmethod
     @property
     def ANGULAR_ACCELERATION(cls):
+        """
+        Velocity 2d."""
         return cls._ANGULAR_ACCELERATION
 
     @classmethod
     @property
     def POINT(cls):
+        """
+        Acceleration 2d."""
         # assumes X, Y have subsequent indices
         return slice(cls._X, cls._Y + 1)
 
@@ -97,12 +127,14 @@ class StateIndex:
     @classmethod
     @property
     def VELOCITY_2D(cls):
+        """State se2."""
         # assumes velocity X, Y have subsequent indices
         return slice(cls._VELOCITY_X, cls._VELOCITY_Y + 1)
 
     @classmethod
     @property
     def ACCELERATION_2D(cls):
+        """Velocity 2d."""
         # assumes acceleration X, Y have subsequent indices
         return slice(cls._ACCELERATION_X, cls._ACCELERATION_Y + 1)
 

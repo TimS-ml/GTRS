@@ -1,3 +1,7 @@
+"""
+Pdm observation implementation.
+"""
+
 import warnings
 from typing import Dict, List, Optional, Tuple
 
@@ -222,6 +226,13 @@ class PDMObservation:
         self._initialized = True
 
     def update_replay(self, scenario: AbstractScenario, iteration_index: int) -> None:
+        """
+        Update replay.
+        
+        Args:
+            scenario: Scenario.
+            iteration_index: Iteration index.
+        """
         detection_tracks = scenario.get_future_tracked_objects(
             iteration_index, self._observation_samples * self._sample_interval
         )

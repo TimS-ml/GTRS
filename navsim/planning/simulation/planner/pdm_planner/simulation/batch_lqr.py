@@ -1,3 +1,7 @@
+"""
+Batch lqr implementation.
+"""
+
 from enum import IntEnum
 from typing import Optional, Tuple
 

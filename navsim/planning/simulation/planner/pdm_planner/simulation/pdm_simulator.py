@@ -1,3 +1,7 @@
+"""
+Pdm simulator implementation.
+"""
+
 import numpy as np
 import numpy.typing as npt
 from nuplan.common.actor_state.ego_state import EgoState

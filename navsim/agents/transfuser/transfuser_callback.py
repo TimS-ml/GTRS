@@ -1,3 +1,7 @@
+"""
+Training callbacks for Transfuser agent.
+"""
+
 from typing import Any, Dict, Optional, Union
 
 import cv2

@@ -6,6 +6,10 @@
 # ------------------------------------------------------------------------
 #  Modified by Shihao Wang
 # ------------------------------------------------------------------------
+"""
+Neural Radiance Field (NeRF) utilities for 3D scene representation.
+"""
+
 import math
 
 import numpy as np
@@ -13,6 +17,14 @@ import torch
 
 
 def pos2posemb3d(pos, num_pos_feats=128, temperature=10000):
+    """
+    Pos2posemb3d.
+    
+    Args:
+        pos: Pos.
+        num_pos_feats: Num pos feats.
+        temperature: Temperature.
+    """
     scale = 2 * math.pi
     pos = pos * scale
     dim_t = torch.arange(num_pos_feats, dtype=torch.float32, device=pos.device)
@@ -21,6 +33,14 @@ def pos2posemb3d(pos, num_pos_feats=128, temperature=10000):
     pos_y = pos[..., 1, None] / dim_t
     pos_z = pos[..., 2, None] / dim_t
     pos_x = torch.stack((pos_x[..., 0::2].sin(), pos_x[..., 1::2].cos()), dim=-1).flatten(-2)
+    """
+    Pos2posemb1d.
+    
+    Args:
+        pos: Pos.
+        num_pos_feats: Num pos feats.
+        temperature: Temperature.
+    """
     pos_y = torch.stack((pos_y[..., 0::2].sin(), pos_y[..., 1::2].cos()), dim=-1).flatten(-2)
     pos_z = torch.stack((pos_z[..., 0::2].sin(), pos_z[..., 1::2].cos()), dim=-1).flatten(-2)
     posemb = torch.cat((pos_y, pos_x, pos_z), dim=-1)
@@ -73,7 +93,22 @@ def nerf_positional_encoding(
         )
 
     for freq in frequency_bands:
+    """
+    Traj2nerf.
+    
+    Args:
+        traj: Traj.
+    """
         for func in [torch.sin, torch.cos]:
+    """
+    Nerf2traj.
+    
+    Args:
+        nerf: Nerf.
+        num_encoding_functions: Num encoding functions.
+        include_input: Include input.
+        log_sampling: Log sampling.
+    """
             encoding.append(func(tensor * freq))
 
     # Special case, for no positional encoding

@@ -7,6 +7,10 @@
 #   https://github.com/facebookresearch/dino/blob/master/vision_transformer.py
 #   https://github.com/rwightman/pytorch-image-models/tree/master/timm/layers/patch_embed.py
 
+"""
+Transformer block implementations.
+"""
+
 import logging
 import os
 from typing import Callable, List, Any, Tuple, Dict
@@ -41,9 +45,31 @@ except ImportError:
 
 
 class Block(nn.Module):
+    """
+    Block neural network component.
+    """
     def __init__(
         self,
         dim: int,
+        """
+        Initialize the instance.
+        
+        Args:
+            dim: Dim.
+            num_heads: Num heads.
+            mlp_ratio: Mlp ratio.
+            qkv_bias: Qkv bias.
+            proj_bias: Proj bias.
+            ffn_bias: Ffn bias.
+            drop: Drop.
+            attn_drop: Attn drop.
+            init_values: Init values.
+            drop_path: Drop path.
+            act_layer: Act layer.
+            norm_layer: Norm layer.
+            attn_class: Attn class.
+            ffn_layer: Ffn layer.
+        """
         num_heads: int,
         mlp_ratio: float = 4.0,
         qkv_bias: bool = False,
@@ -87,6 +113,12 @@ class Block(nn.Module):
         self.sample_drop_ratio = drop_path
 
     def forward(self, x: Tensor) -> Tensor:
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+        """
         def attn_residual_func(x: Tensor) -> Tensor:
             return self.ls1(self.attn(self.norm1(x)))
 
@@ -116,6 +148,14 @@ class Block(nn.Module):
 
 def drop_add_residual_stochastic_depth(
     x: Tensor,
+    """
+    Drop add residual stochastic depth.
+    
+    Args:
+        x: X.
+        residual_func: Residual func.
+        sample_drop_ratio: Sample drop ratio.
+    """
     residual_func: Callable[[Tensor], Tensor],
     sample_drop_ratio: float = 0.0,
 ) -> Tensor:
@@ -139,6 +179,13 @@ def drop_add_residual_stochastic_depth(
 
 
 def get_branges_scales(x, sample_drop_ratio=0.0):
+    """
+    Get branges scales.
+    
+    Args:
+        x: X.
+        sample_drop_ratio: Sample drop ratio.
+    """
     b, n, d = x.shape
     sample_subset_size = max(int(b * (1 - sample_drop_ratio)), 1)
     brange = (torch.randperm(b, device=x.device))[:sample_subset_size]
@@ -168,6 +215,29 @@ def get_attn_bias_and_cat(x_list, branges=None):
     batch_sizes = [b.shape[0] for b in branges] if branges is not None else [x.shape[0] for x in x_list]
     all_shapes = tuple((b, x.shape[1]) for b, x in zip(batch_sizes, x_list))
     if all_shapes not in attn_bias_cache.keys():
+    """
+    Drop add residual stochastic depth list.
+    
+    Args:
+        x_list: X list.
+        residual_func: Residual func.
+        sample_drop_ratio: Sample drop ratio.
+                """
+                Attn residual func.
+                
+                Args:
+                """
+                Ffn residual func.
+                
+                Args:
+                    x: X.
+                    attn_bias: Attn bias.
+                """
+                    x: X.
+                    attn_bias: Attn bias.
+                """
+        scaling_vector: Scaling vector.
+    """
         seqlens = []
         for b, x in zip(batch_sizes, x_list):
             for _ in range(b):
@@ -177,6 +247,13 @@ def get_attn_bias_and_cat(x_list, branges=None):
         attn_bias_cache[all_shapes] = attn_bias
 
     if branges is not None:
+                """
+                Attn residual func.
+                
+                Args:
+                    x: X.
+                    attn_bias: Attn bias.
+                """
         cat_tensors = index_select_cat([x.flatten(1) for x in x_list], branges).view(1, -1, x_list[0].shape[-1])
     else:
         tensors_bs1 = tuple(x.reshape([1, -1, *x.shape[2:]]) for x in x_list)
@@ -187,6 +264,9 @@ def get_attn_bias_and_cat(x_list, branges=None):
 
 def drop_add_residual_stochastic_depth_list(
     x_list: List[Tensor],
+    """
+    Nested Tensor Block neural network component.
+    """
     residual_func: Callable[[Tensor, Any], Tensor],
     sample_drop_ratio: float = 0.0,
     scaling_vector=None,
@@ -201,6 +281,12 @@ def drop_add_residual_stochastic_depth_list(
 
     # 3) apply residual_func to get residual, and split the result
     residual_list = attn_bias.split(residual_func(x_cat, attn_bias=attn_bias))  # type: ignore
+        """
+        Forward pass through the network.
+        
+        Args:
+            x_or_x_list: X or x list.
+        """
 
     outputs = []
     for x, brange, residual, residual_scale_factor in zip(x_list, branges, residual_list, residual_scale_factors):

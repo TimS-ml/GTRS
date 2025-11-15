@@ -8,10 +8,22 @@
 #   https://github.com/rwightman/pytorch-image-models/tree/master/timm/layers/drop.py
 
 
+"""
+Drop path (stochastic depth) regularization layer.
+"""
+
 from torch import nn
 
 
 def drop_path(x, drop_prob: float = 0.0, training: bool = False):
+    """
+    Drop path.
+    
+    Args:
+        x: X.
+        drop_prob: Drop prob.
+        training: Training.
+    """
     if drop_prob == 0.0 or not training:
         return x
     keep_prob = 1 - drop_prob

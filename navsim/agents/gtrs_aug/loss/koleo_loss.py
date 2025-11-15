@@ -3,6 +3,10 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
+"""
+Koleo loss for preventing feature collapse in self-supervised learning.
+"""
+
 import logging
 
 import torch
@@ -22,6 +26,8 @@ class KoLeoLoss(nn.Module):
     """
 
     def __init__(self):
+        """
+        Initialize the instance."""
         super().__init__()
         self.pdist = nn.PairwiseDistance(2, eps=1e-8)
 

@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Hydra backbone bev implementation.
+"""
+
+"""
+Bird's-eye-view (BEV) backbone for Hydra model in GTRS dense agent.
+"""
+
 import torch
 from torch import nn
 
@@ -21,8 +29,17 @@ from navsim.agents.gtrs_dense.hydra_config import HydraConfig
 
 
 class HydraBackboneBEV(nn.Module):
+    """
+    Hydra Backbone B E V.
+    """
 
     def __init__(self, config: HydraConfig):
+        """
+        Initialize the instance.
+        
+        Args:
+            config: Config.
+        """
 
         super().__init__()
         self.config = config
@@ -99,12 +116,25 @@ class HydraBackboneBEV(nn.Module):
             )
 
     def top_down(self, x):
+        """
+        Top down.
+        
+        Args:
+            x: X.
+        """
         p5 = self.relu(self.c5_conv(x))
         p4 = self.relu(self.up_conv5(self.upsample(p5)))
         p3 = self.relu(self.up_conv4(self.upsample2(p4)))
         return p3
 
     def encode_img(self, img):
+        """
+        Forward pass through the network.
+        
+        Args:
+            image_front: Image front.
+            image_back: Image back.
+        """
         B, C, H, W = img.shape
         if self.backbone_type == 'vov':
             image_features = self.image_encoder(img)[-1]
@@ -130,6 +160,7 @@ class HydraBackboneBEV(nn.Module):
             tokens + self.pos_emb.weight[None].repeat(B, 1, 1)
         )
         img_tokens_ = tokens[:, :img_len]
+        """Forward."""
         bev_tokens_ = tokens[:, img_len:]
 
         up_bev_tokens = self.top_down(

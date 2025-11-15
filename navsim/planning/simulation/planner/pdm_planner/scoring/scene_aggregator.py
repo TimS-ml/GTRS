@@ -1,3 +1,7 @@
+"""
+Scene aggregator implementation.
+"""
+
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
@@ -10,6 +14,9 @@ from navsim.planning.simulation.planner.pdm_planner.scoring.pdm_comfort_metrics 
 
 @dataclass
 class SceneAggregator:
+    """
+    Scene Aggregator.
+    """
     now_frame: str
     previous_frame: str
     score_df: pd.DataFrame
@@ -26,6 +33,12 @@ class SceneAggregator:
         second_stage_scores = second_stage_scores.copy()
 
         def _calc_squared_distance(row):
+            """
+             calc squared distance.
+            
+            Args:
+                row: Row.
+            """
             x1, y1 = first_stage_row["endpoint_x"], first_stage_row["endpoint_y"]
             x2, y2 = row["start_point_x"], row["start_point_y"]
 
@@ -47,6 +60,13 @@ class SceneAggregator:
         return second_stage_scores[["weight"]].reset_index()
 
     def _compute_two_frame_comfort(self, current_token: str, previous_token: str) -> float:
+        """
+         compute two frame comfort.
+        
+        Args:
+            current_token: Current token.
+            previous_token: Previous token.
+        """
         try:
             current_row = self.score_df.loc[current_token]
             prev_row = self.score_df.loc[previous_token]
@@ -70,6 +90,12 @@ class SceneAggregator:
 
         two_frame_comfort = ego_is_two_frame_extended_comfort(
             current_states_overlap[None, :],
+        """
+        Aggregate scores.
+        
+        Args:
+            one_stage_only: One stage only.
+        """
             prev_states_overlap[None, :],
             time_point_s,
         )[0].astype(np.float64)

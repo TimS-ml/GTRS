@@ -3,12 +3,27 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
+"""
+Data collation utilities for batching GTRS augmented training data.
+"""
+
 import random, os
 
 import torch
 from torch.utils.data._utils.collate import default_collate
 
 def collate_data_and_cast(samples_list, mask_ratio_tuple, mask_probability, dtype, n_tokens=None, mask_generator=None):
+    """
+    Collate data and cast.
+    
+    Args:
+        samples_list: Samples list.
+        mask_ratio_tuple: Mask ratio tuple.
+        mask_probability: Mask probability.
+        dtype: Dtype.
+        n_tokens: N tokens.
+        mask_generator: Mask generator.
+    """
     # if os.getenv('ROBUST_HYDRA_DEBUG') == 'true':
     #     import pdb; pdb.set_trace()
 

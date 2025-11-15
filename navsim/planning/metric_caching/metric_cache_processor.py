@@ -1,3 +1,7 @@
+"""
+Metric cache processor implementation.
+"""
+
 import pathlib
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -212,6 +216,14 @@ class MetricCacheProcessor:
     def _build_pdm_observation(
         self,
         interpolated_detection_tracks: List[DetectionsTracks],
+        """
+         build pdm observation.
+        
+        Args:
+            interpolated_detection_tracks: Interpolated detection tracks.
+            interpolated_traffic_light_data: Interpolated traffic light data.
+            route_lane_dict: Route lane dict.
+        """
         interpolated_traffic_light_data: List[List[TrafficLightStatusData]],
         route_lane_dict: Dict[str, LaneGraphEdgeMapObject],
     ):
@@ -232,6 +244,12 @@ class MetricCacheProcessor:
         return pdm_observation
 
     def _interpolate_traffic_light_status(self, scenario: NavSimScenario) -> List[List[TrafficLightStatusData]]:
+        """
+         interpolate traffic light status.
+        
+        Args:
+            scenario: Scenario.
+        """
 
         time_horizon = self._proposal_sampling.time_horizon  # [s]
         interpolate_step = self._proposal_sampling.interval_length  # [s]
@@ -241,6 +259,13 @@ class MetricCacheProcessor:
 
         traffic_light_status = []
         for iteration in gt_indices:
+        """
+         load route dicts.
+        
+        Args:
+            scenario: Scenario.
+            route_roadblock_ids: Route roadblock ids.
+        """
             current_status_list = list(scenario.get_traffic_light_status_at_iteration(iteration=iteration))
             for _ in range(int(scenario_step / interpolate_step)):
                 traffic_light_status.append(current_status_list)
@@ -249,10 +274,28 @@ class MetricCacheProcessor:
             return traffic_light_status
         else:
             return traffic_light_status[: -int(scenario_step / interpolate_step) + 1]
+        """
+         build file path.
+        
+        Args:
+            scenario: Scenario.
+        """
 
     def _load_route_dicts(
         self, scenario: NavSimScenario, route_roadblock_ids: List[str]
+        """
+        Compute and save metric cache.
+        
+        Args:
+            scenario: Scenario.
+        """
     ) -> Tuple[Dict[str, RoadBlockGraphEdgeMapObject], Dict[str, LaneGraphEdgeMapObject]]:
+        """
+         extract ego future trajectory.
+        
+        Args:
+            scenario: Scenario.
+        """
         route_roadblock_ids = list(dict.fromkeys(route_roadblock_ids))
 
         route_roadblock_dict = {}
@@ -277,6 +320,12 @@ class MetricCacheProcessor:
         )
 
     def compute_and_save_metric_cache(self, scenario: NavSimScenario) -> Optional[CacheMetadataEntry]:
+        """
+        Compute metric cache.
+        
+        Args:
+            scenario: Scenario.
+        """
         file_name = self._build_file_path(scenario)
         assert file_name is not None, "Cache path can not be None for saving cache."
         if file_name.exists() and not self._force_feature_computation:

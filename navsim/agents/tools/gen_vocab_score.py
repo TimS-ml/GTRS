@@ -1,3 +1,7 @@
+"""
+Vocabulary and scoring generation tools.
+"""
+
 import logging
 import lzma
 import os
@@ -36,6 +40,12 @@ CONFIG_NAME = "default_run_pdm_score"
 
 @hydra.main(config_path=CONFIG_PATH, config_name=CONFIG_NAME)
 def main(cfg: DictConfig) -> None:
+    """
+    Main.
+    
+    Args:
+        cfg: Cfg.
+    """
     build_logger(cfg)
     worker = build_worker(cfg)
     vocab = np.load(traj_path)
@@ -76,6 +86,12 @@ def main(cfg: DictConfig) -> None:
     score_rows: List[Tuple[Dict[str, Any], int, int]] = worker_map(worker, run_pdm_score, new_data_points)
     final = {}
     for tmp in score_rows:
+    """
+    Run pdm score.
+    
+    Args:
+        args: Args.
+    """
         final[tmp['token']] = tmp['score']
     pickle.dump(final, open(result_path, 'wb'))
 

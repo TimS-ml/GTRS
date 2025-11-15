@@ -1,3 +1,7 @@
+"""
+Configuration for Transfuser agent.
+"""
+
 from dataclasses import dataclass
 from typing import Tuple
 
@@ -111,10 +115,14 @@ class TransfuserConfig:
 
     @property
     def bev_semantic_frame(self) -> Tuple[int, int]:
+        """
+        Bev semantic frame."""
         return (self.bev_pixel_height, self.bev_pixel_width)
 
     @property
     def bev_radius(self) -> float:
+        """
+        Bev radius."""
         values = [
             self.lidar_min_x,
             self.lidar_max_x,

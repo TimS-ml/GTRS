@@ -1,4 +1,10 @@
 # dataloader only for private test
+"""
+Common data structures and utilities.
+
+This module provides data loading utilities used throughout NAVSIM.
+"""
+
 from __future__ import annotations
 
 import lzma
@@ -20,6 +26,13 @@ from collections import defaultdict
 from tqdm import tqdm
 
 def group_frames_by_sequence(file_path, sequence_length=4):
+    """
+    Group frames by sequence.
+    
+    Args:
+        file_path: File path.
+        sequence_length: Sequence length.
+    """
 
     with open(file_path, 'rb') as f:
         scene_dict_list = pickle.load(f)
@@ -71,6 +84,15 @@ def filter_scenes(data_path: Path, scene_filter: SceneFilter) -> Tuple[Dict[str,
 
 def filter_synthetic_scenes(
     data_path: Path, 
+    """
+    Filter synthetic scenes.
+    
+    Args:
+        data_path: Data path.
+        scene_filter: Scene filter.
+        sensor_config: Sensor config.
+        sensor_blobs_path: Sensor blobs path.
+    """
     scene_filter: SceneFilter, 
     sensor_config: SensorConfig = SensorConfig.build_no_sensors(),
     sensor_blobs_path: Path = None,

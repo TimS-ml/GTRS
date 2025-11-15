@@ -1,3 +1,7 @@
+"""
+Navsim scenario utils implementation.
+"""
+
 from typing import Dict, List, Optional
 
 import numpy as np
@@ -33,6 +37,14 @@ tracked_object_types: Dict[str, TrackedObjectType] = {
 
 def ego_status_to_ego_state(
     ego_status: EgoStatus, vehicle_parameters: VehicleParameters, time_point: TimePoint
+    """
+    Ego status to ego state.
+    
+    Args:
+        ego_status: Ego status.
+        vehicle_parameters: Vehicle parameters.
+        time_point: Time point.
+    """
 ) -> EgoState:
     rear_axle_velocity_2d = StateVector2D(*ego_status.ego_velocity)
     rear_axle_acceleration_2d = StateVector2D(*ego_status.ego_acceleration)

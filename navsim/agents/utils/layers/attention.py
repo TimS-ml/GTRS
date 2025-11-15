@@ -7,6 +7,10 @@
 #   https://github.com/facebookresearch/dino/blob/master/vision_transformer.py
 #   https://github.com/rwightman/pytorch-image-models/tree/master/timm/models/vision_transformer.py
 
+"""
+Attention layer implementations.
+"""
+
 import logging
 import os
 import warnings
@@ -39,15 +43,35 @@ except ImportError:
 
 
 class Attention(nn.Module):
+    """
+    Attention mechanism.
+    """
     def __init__(
         self,
         dim: int,
+        """
+        Initialize the instance.
+        
+        Args:
+            dim: Dim.
+            num_heads: Num heads.
+            qkv_bias: Qkv bias.
+            proj_bias: Proj bias.
+            attn_drop: Attn drop.
+            proj_drop: Proj drop.
+        """
         num_heads: int = 8,
         qkv_bias: bool = False,
         proj_bias: bool = True,
         attn_drop: float = 0.0,
         proj_drop: float = 0.0,
     ) -> None:
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+        """
         super().__init__()
         self.num_heads = num_heads
         head_dim = dim // num_heads
@@ -62,6 +86,12 @@ class Attention(nn.Module):
 
 
     def forward(self, x: Tensor) -> Tensor:
+        """
+        Old attn.
+        
+        Args:
+            x: X.
+        """
         # old = self.old_attn(x)
         #
         # if is_flash_attn_available:
@@ -82,6 +112,13 @@ class Attention(nn.Module):
         return x
 
     def old_attn(self, x):
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+            attn_bias: Attn bias.
+        """
         B, N, C = x.shape
         qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0] * self.scale, qkv[1], qkv[2]
@@ -98,6 +135,9 @@ class Attention(nn.Module):
 
 
 class MemEffAttention(Attention):
+    """
+    Mem Eff Attention mechanism.
+    """
     def forward(self, x: Tensor, attn_bias=None) -> Tensor:
         if not XFORMERS_AVAILABLE:
             if attn_bias is not None:

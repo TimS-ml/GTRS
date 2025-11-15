@@ -3,6 +3,10 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
+"""
+Data transformation and augmentation functions for GTRS training.
+"""
+
 from typing import Sequence
 
 import torch
@@ -15,6 +19,8 @@ class GaussianBlur(transforms.RandomApply):
     """
 
     def __init__(self, *, p: float = 0.5, radius_min: float = 0.1, radius_max: float = 2.0):
+        """
+        Initialize the instance."""
         # NOTE: torchvision is applying 1 - probability to return the original image
         keep_p = 1 - p
         transform = transforms.GaussianBlur(kernel_size=9, sigma=(radius_min, radius_max))

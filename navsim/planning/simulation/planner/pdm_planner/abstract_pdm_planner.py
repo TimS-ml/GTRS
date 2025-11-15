@@ -1,3 +1,7 @@
+"""
+Abstract pdm planner implementation.
+"""
+
 from abc import ABC
 from typing import Dict, List, Optional, Tuple
 

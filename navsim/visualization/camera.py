@@ -1,3 +1,7 @@
+"""
+Camera image visualization utilities.
+"""
+
 from typing import List, Optional, Tuple
 
 import cv2

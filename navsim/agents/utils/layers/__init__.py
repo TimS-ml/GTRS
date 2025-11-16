@@ -1,3 +1,7 @@
+"""
+Neural network layer utilities.
+"""
+
 from .dino_head import DINOHead
 from .mlp import Mlp
 from .patch_embed import PatchEmbed

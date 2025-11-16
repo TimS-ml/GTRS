@@ -3,6 +3,10 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
+"""
+DINO classification token loss for self-supervised learning.
+"""
+
 import torch
 import torch.distributed as dist
 import torch.nn.functional as F
@@ -10,12 +14,23 @@ from torch import nn
 
 
 class DINOLoss(nn.Module):
+    """
+    D I N O Loss for training.
+    """
     def __init__(
         self,
         out_dim,
         student_temp=0.1,
         center_momentum=0.9,
     ):
+        """
+        Initialize the instance.
+        
+        Args:
+            out_dim: Out dim.
+            student_temp: Student temp.
+            center_momentum: Center momentum.
+        """
         super().__init__()
         self.student_temp = student_temp
         self.center_momentum = center_momentum
@@ -27,6 +42,13 @@ class DINOLoss(nn.Module):
 
     @torch.no_grad()
     def softmax_center_teacher(self, teacher_output, teacher_temp):
+        """
+        Softmax center teacher.
+        
+        Args:
+            teacher_output: Teacher output.
+            teacher_temp: Teacher temp.
+        """
         self.apply_center_update()
         # teacher centering and sharpening
         return F.softmax((teacher_output - self.center) / teacher_temp, dim=-1)
@@ -69,6 +91,8 @@ class DINOLoss(nn.Module):
         for s in student_output_list:
             lsm = F.log_softmax(s / self.student_temp, dim=-1)
             for t in teacher_out_softmaxed_centered_list:
+        """
+        Apply center update."""
                 loss = torch.sum(t * lsm, dim=-1)
                 total_loss -= loss.mean()
         return total_loss

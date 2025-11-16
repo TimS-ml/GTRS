@@ -1,3 +1,7 @@
+"""
+Loss functions for training Transfuser agent.
+"""
+
 from typing import Dict
 
 import torch

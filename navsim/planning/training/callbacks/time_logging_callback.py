@@ -1,3 +1,7 @@
+"""
+Time logging callback implementation.
+"""
+
 import time
 from typing import Any, Optional
 
@@ -8,6 +12,8 @@ class TimeLoggingCallback(pl.Callback):
     """Simple lightning callback to log training time."""
 
     def __init__(self) -> None:
+        """
+        Initialize the instance."""
         pass
 
     def on_validation_epoch_start(self, trainer: pl.Trainer, lightning_module: pl.LightningModule) -> None:

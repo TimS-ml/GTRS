@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Hydra model implementation.
+"""
+
+"""
+Hydra neural network model for GTRS augmented agent.
+"""
+
 import copy
 import os
 import pickle
@@ -30,7 +38,16 @@ from navsim.agents.utils.attn import MemoryEffTransformer
 
 
 class HydraModel(nn.Module):
+    """
+    Hydra Model neural network model.
+    """
     def __init__(self, config: HydraConfigAug):
+        """
+        Initialize the instance.
+        
+        Args:
+            config: Config.
+        """
         super().__init__()
 
         self._query_splits = [
@@ -74,6 +91,12 @@ class HydraModel(nn.Module):
                     config=config
                 )
             else:
+        """
+        Img feat blc.
+        
+        Args:
+            camera_feature: Camera feature.
+        """
                 raise NotImplementedError
 
     def img_feat_blc(self, camera_feature):
@@ -83,6 +106,22 @@ class HydraModel(nn.Module):
         return img_features
 
     def img_feat_blc_dict(self, camera_feature, **kwargs):
+        """
+        Forward pass through the network.
+        
+        Args:
+        """
+        Forward pass through the network.
+        
+        Args:
+            features: Features.
+            masks: Masks.
+            interpolated_traj: Interpolated traj.
+            tokens: Tokens.
+        """
+            x_list: X list.
+            mask_list: Mask list.
+        """
         img_feat_tup = self._backbone.forward_tup(camera_feature, **kwargs)
         img_feat_dict = {
             'patch_token': img_feat_tup[0],
@@ -107,6 +146,18 @@ class HydraModel(nn.Module):
                 tokens=None) -> Dict[str, torch.Tensor]:
 
         output: Dict[str, torch.Tensor] = {}
+        """
+        Initialize the instance.
+        
+        Args:
+            num_poses: Num poses.
+            d_ffn: D ffn.
+            d_model: D model.
+            vocab_path: Vocab path.
+            nhead: Nhead.
+            nlayers: Nlayers.
+            config: Config.
+        """
 
         camera_feature: torch.Tensor = features[
             "camera_feature"]  # List[torch.Tensor], len == seq_len, tensor.shape == [b, 3, h, w]
@@ -137,6 +188,9 @@ class HydraModel(nn.Module):
 
 
 class HydraTrajHead(nn.Module):
+    """
+    Hydra Traj Head.
+    """
     def __init__(self, num_poses: int, d_ffn: int, d_model: int, vocab_path: str,
                  nhead: int, nlayers: int, config: HydraConfigAug = None
                  ):
@@ -206,6 +260,15 @@ class HydraTrajHead(nn.Module):
         })
 
         if self._config.lab.optimize_prev_frame_traj_for_ec:
+        """
+        Forward pass through the network.
+        
+        Args:
+            bev_feature: Bev feature.
+            status_encoding: Status encoding.
+            interpolated_traj: Interpolated traj.
+            tokens: Tokens.
+        """
             self.heads['imi_prev'] = nn.Sequential(
                 nn.Linear(d_model, d_ffn),
                 nn.ReLU(),
@@ -284,6 +347,14 @@ class HydraTrajHead(nn.Module):
         dist_status = tr_out + status_encoding.unsqueeze(1)  # [b, n_vocab, c]
         result = {}
         for k, head in self.heads.items():
+        """
+        Forward pass through the network.
+        
+        Args:
+            bev_feature: Bev feature.
+            status_encoding: Status encoding.
+            dict_first_stage: Dict first stage.
+        """
             result[k] = head(dist_status).squeeze(-1)
 
         scores = (
@@ -302,6 +373,19 @@ class HydraTrajHead(nn.Module):
         selected_indices = scores.argmax(1)
         scene_cnt_tensor = torch.arange(B, device=scores.device)
         if self.dp_preds is None:
+        """
+        Initialize the instance.
+        
+        Args:
+            d_ffn: D ffn.
+            d_model: D model.
+            nhead: Nhead.
+            d_backbone: D backbone.
+            num_stage: Num stage.
+            stage_layers: Stage layers.
+            topks: Topks.
+            config: Config.
+        """
             result["trajectory"] = self.vocab.data[selected_indices]
         else:
             result["trajectory"] = vocab[scene_cnt_tensor, selected_indices].view(B, HORIZON, 3)
@@ -358,6 +442,9 @@ class HydraTrajHead(nn.Module):
             indices_absolute)
         dict_first_stage['indices_absolute'] = torch.cat([indices_absolute, indices_interb], dim=1)
         for k in self.heads.keys():
+    """
+    Traj Offset Head.
+    """
             dict_first_stage['coarse_score'][k] = torch.cat([dict_first_stage['coarse_score'][k], score_interb[k]],
                                                             dim=1)
 
@@ -445,6 +532,13 @@ class TrajOffsetHead(nn.Module):
                 ),
             })
         elif refinement_metrics == 'dac_ep_lk':
+        """
+        Forward pass through the network.
+        
+        Args:
+            bev_feat_fg: Bev feat fg.
+            refinement_dict: Refinement dict.
+        """
             heads = nn.ModuleDict({
                 'drivable_area_compliance':
                     nn.Sequential(
@@ -539,6 +633,17 @@ class TrajOffsetHead(nn.Module):
             if self.use_offset_refinement:
                 reference = refinement_dict[-1]['coarse_score']
             for j, dist_status in enumerate(tr_out_lst):
+        """
+        Forward pass through the network.
+        
+        Args:
+            tgt: Tgt.
+            memory: Memory.
+            tgt_mask: Tgt mask.
+            memory_mask: Memory mask.
+            tgt_key_padding_mask: Tgt key padding mask.
+            memory_key_padding_mask: Memory key padding mask.
+        """
                 layer_result = {}
                 for k, head in self.multi_stage_heads[i].items():
                     if self.use_offset_refinement:
@@ -614,6 +719,9 @@ class TrajOffsetHead(nn.Module):
                 refinement_dict.append(_next_layer_dict)
 
             else:
+    """
+    Transformer Decoder_v2 for data transformation.
+    """
                 select_indices = scores.argmax(1)
                 batch_indices = torch.arange(B, device=select_indices.device)
                 final_traj = refinement_dict[-1]['trajs'][batch_indices, select_indices]
@@ -631,6 +739,13 @@ class TransformerDecoder_v2(nn.TransformerDecoder):
         output_lst = []
 
         for mod in self.layers:
+    """
+     inverse sigmoid.
+    
+    Args:
+        x: X.
+        eps: Eps.
+    """
             output = mod(output, memory, tgt_mask=tgt_mask,
                          memory_mask=memory_mask,
                          tgt_key_padding_mask=tgt_key_padding_mask,

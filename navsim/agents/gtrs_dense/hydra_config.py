@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Hydra config implementation.
+"""
+
+"""
+Configuration for Hydra model in GTRS dense agent.
+"""
+
 import os
 from dataclasses import dataclass
 from typing import Tuple
@@ -28,6 +36,9 @@ NAVSIM_DEVKIT_ROOT = os.environ.get("NAVSIM_DEVKIT_ROOT")
 
 @dataclass
 class HydraConfig(TransfuserConfig):
+    """
+    Configuration for Hydra.
+    """
     scheduler: str = 'default'
 
     version: str = 'default'
@@ -191,9 +202,13 @@ class HydraConfig(TransfuserConfig):
     bev_features_channels: int = 64
     bev_down_sample_factor: int = 4
     bev_upsample_factor: int = 2
+        """
+        Bev semantic frame."""
 
     @property
     def bev_semantic_frame(self) -> Tuple[int, int]:
+        """
+        Bev radius."""
         return (self.bev_pixel_height, self.bev_pixel_width)
 
     @property

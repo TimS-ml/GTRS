@@ -1,0 +1,4 @@
+"""
+Graph Search package initialization.
+"""
+

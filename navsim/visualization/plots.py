@@ -1,3 +1,7 @@
+"""
+Plotting utilities for trajectory and scene visualization.
+"""
+
 import io
 from typing import Any, Callable, List, Tuple
 
@@ -238,6 +242,17 @@ def frame_plot_to_gif(
 
 def concat_scenes_to_gif_with_labels(
     file_name: str,
+    """
+    Concat scenes to gif with labels.
+    
+    Args:
+        file_name: File name.
+        callable_frame_plot: Callable frame plot.
+        scenes: Scenes.
+        frame_indices_list: Frame indices list.
+        scene_labels: Scene labels.
+        duration: Duration.
+    """
     callable_frame_plot: Callable[[Scene, int], Tuple[plt.Figure, Any]],
     scenes: List[Scene],
     frame_indices_list: List[List[int]],

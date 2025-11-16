@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Hydra model implementation.
+"""
+
+"""
+Hydra neural network model for GTRS dense agent.
+"""
+
 from typing import Dict
 
 import numpy as np
@@ -27,7 +35,16 @@ from navsim.agents.utils.nerf import nerf_positional_encoding
 
 
 class HydraModel(nn.Module):
+    """
+    Hydra Model neural network model.
+    """
     def __init__(self, config: HydraConfig):
+        """
+        Initialize the instance.
+        
+        Args:
+            config: Config.
+        """
         super().__init__()
 
         self._query_splits = [
@@ -74,6 +91,12 @@ class HydraModel(nn.Module):
 
 
     def img_feat_blc(self, camera_feature):
+        """
+        Img feat blc.
+        
+        Args:
+            camera_feature: Camera feature.
+        """
         img_features = self._backbone(camera_feature)
         img_features = self.downscale_layer(img_features).flatten(-2, -1)
         img_features = img_features.permute(0, 2, 1)
@@ -91,6 +114,13 @@ class HydraModel(nn.Module):
 
         # original
         if isinstance(camera_feature, list):
+        """
+        Forward pass through the network.
+        
+        Args:
+            features: Features.
+            interpolated_traj: Interpolated traj.
+        """
             camera_feature = camera_feature[-1]
         img_features = self.img_feat_blc(camera_feature)
         if self._config.use_back_view:
@@ -111,6 +141,18 @@ class HydraModel(nn.Module):
 
         if self._config.num_ego_status == 1 and status_feature.shape[1] == 32:
             status_encoding = self._status_encoding(status_feature[:, :8])
+        """
+        Initialize the instance.
+        
+        Args:
+            num_poses: Num poses.
+            d_ffn: D ffn.
+            d_model: D model.
+            vocab_path: Vocab path.
+            nhead: Nhead.
+            nlayers: Nlayers.
+            config: Config.
+        """
         else:
             status_encoding = self._status_encoding(status_feature)
 
@@ -132,6 +174,9 @@ class HydraModel(nn.Module):
 
 
 class HydraTrajHead(nn.Module):
+    """
+    Hydra Traj Head.
+    """
     def __init__(self, num_poses: int, d_ffn: int, d_model: int, vocab_path: str,
                  nhead: int, nlayers: int, config: HydraConfig = None
                  ):
@@ -187,6 +232,14 @@ class HydraTrajHead(nn.Module):
                 nn.Linear(d_ffn, 1),
             ),
             'imi': nn.Sequential(
+        """
+        Forward pass through the network.
+        
+        Args:
+            bev_feature: Bev feature.
+            status_encoding: Status encoding.
+            interpolated_traj: Interpolated traj.
+        """
                 nn.Linear(d_model, d_ffn),
                 nn.ReLU(),
                 nn.Linear(d_ffn, d_ffn),
@@ -236,6 +289,16 @@ class HydraTrajHead(nn.Module):
             result['dropout_indices'] = indices
             L, HORIZON, _ = vocab.shape
         else:
+        """
+        Eval dp proposals.
+        
+        Args:
+            bev_feature: Bev feature.
+            status_encoding: Status encoding.
+            dp_proposals: Dp proposals.
+            topk: Topk.
+            dp_only_inference: Dp only inference.
+        """
             result['dropout_indices'] = torch.arange(num_total, device=vocab.device)
         result['trajectory_vocab_dropout'] = vocab
         if self.use_nerf:

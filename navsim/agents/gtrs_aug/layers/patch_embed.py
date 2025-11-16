@@ -7,6 +7,10 @@
 #   https://github.com/facebookresearch/dino/blob/master/vision_transformer.py
 #   https://github.com/rwightman/pytorch-image-models/tree/master/timm/layers/patch_embed.py
 
+"""
+Patch embedding layers for vision transformer models.
+"""
+
 from typing import Callable, Optional, Tuple, Union
 
 from torch import Tensor
@@ -14,6 +18,12 @@ import torch.nn as nn
 
 
 def make_2tuple(x):
+    """
+    Make 2tuple.
+    
+    Args:
+        x: X.
+    """
     if isinstance(x, tuple):
         assert len(x) == 2
         return x
@@ -29,6 +39,17 @@ class PatchEmbed(nn.Module):
     Args:
         img_size: Image size.
         patch_size: Patch token size.
+        """
+        Initialize the instance.
+        
+        Args:
+            img_size: Img size.
+            patch_size: Patch size.
+            in_chans: In chans.
+            embed_dim: Embed dim.
+            norm_layer: Norm layer.
+            flatten_embedding: Flatten embedding.
+        """
         in_chans: Number of input image channels.
         embed_dim: Number of linear projection output channels.
         norm_layer: Normalization layer.
@@ -66,6 +87,12 @@ class PatchEmbed(nn.Module):
         self.norm = norm_layer(embed_dim) if norm_layer else nn.Identity()
 
     def forward(self, x: Tensor) -> Tensor:
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+        """
         _, _, H, W = x.shape
         patch_H, patch_W = self.patch_size
 

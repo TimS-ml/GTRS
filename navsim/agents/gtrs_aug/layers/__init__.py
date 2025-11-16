@@ -3,6 +3,10 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
+"""
+Neural network layer components for GTRS augmented agent.
+"""
+
 from .dino_head import DINOHead
 from .mlp import Mlp
 from .patch_embed import PatchEmbed

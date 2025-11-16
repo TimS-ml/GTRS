@@ -17,6 +17,12 @@ class TransfuserBackbone(nn.Module):
     """Multi-scale Fusion Transformer for image + LiDAR feature fusion."""
 
     def __init__(self, config: TransfuserConfig):
+"""
+                Initialize the instance.
+        
+                Args:
+                    config: Config.
+                """
 
         super().__init__()
         self.config = config
@@ -144,6 +150,12 @@ class TransfuserBackbone(nn.Module):
             )
 
     def top_down(self, x):
+"""
+                Top down.
+        
+                Args:
+                    x: X.
+                """
 
         p5 = self.relu(self.c5_conv(x))
         p4 = self.relu(self.up_conv5(self.upsample(p5)))
@@ -265,6 +277,14 @@ class GPT(nn.Module):
 
     # def __init__(self, n_embd, config, lidar_video, lidar_time_frames):
     def __init__(self, n_embd, config, lidar_time_frames):
+"""
+                Initialize the instance.
+        
+                Args:
+                    n_embd: N embd.
+                    config: Config.
+                    lidar_time_frames: Lidar time frames.
+                """
         super().__init__()
         self.n_embd = n_embd
         # We currently only support seq len 1
@@ -305,6 +325,12 @@ class GPT(nn.Module):
         self.apply(self._init_weights)
 
     def _init_weights(self, module):
+"""
+                 init weights.
+        
+                Args:
+                    module: Module.
+                """
         if isinstance(module, nn.Linear):
             module.weight.data.normal_(
                 mean=self.config.gpt_linear_layer_init_mean,
@@ -369,6 +395,15 @@ class SelfAttention(nn.Module):
     """
 
     def __init__(self, n_embd, n_head, attn_pdrop, resid_pdrop):
+"""
+                Initialize the instance.
+        
+                Args:
+                    n_embd: N embd.
+                    n_head: N head.
+                    attn_pdrop: Attn pdrop.
+                    resid_pdrop: Resid pdrop.
+                """
         super().__init__()
         assert n_embd % n_head == 0
         # key, query, value projections for all heads
@@ -383,6 +418,12 @@ class SelfAttention(nn.Module):
         self.n_head = n_head
 
     def forward(self, x):
+"""
+                Forward.
+        
+                Args:
+                    x: X.
+                """
         b, t, c = x.size()
 
         # calculate query, key, values for all heads in batch and move head
@@ -407,6 +448,16 @@ class Block(nn.Module):
     """an unassuming Transformer block"""
 
     def __init__(self, n_embd, n_head, block_exp, attn_pdrop, resid_pdrop):
+"""
+                Initialize the instance.
+        
+                Args:
+                    n_embd: N embd.
+                    n_head: N head.
+                    block_exp: Block exp.
+                    attn_pdrop: Attn pdrop.
+                    resid_pdrop: Resid pdrop.
+                """
         super().__init__()
         self.ln1 = nn.LayerNorm(n_embd)
         self.ln2 = nn.LayerNorm(n_embd)
@@ -419,6 +470,12 @@ class Block(nn.Module):
         )
 
     def forward(self, x):
+"""
+                Forward.
+        
+                Args:
+                    x: X.
+                """
         x = x + self.attn(self.ln1(x))
         x = x + self.mlp(self.ln2(x))
 
@@ -431,6 +488,14 @@ class MultiheadAttentionWithAttention(nn.Module):
     """
 
     def __init__(self, n_embd, n_head, pdrop):
+"""
+                Initialize the instance.
+        
+                Args:
+                    n_embd: N embd.
+                    n_head: N head.
+                    pdrop: Pdrop.
+                """
         super().__init__()
         assert n_embd % n_head == 0
         # key, query, value projections for all heads
@@ -445,6 +510,14 @@ class MultiheadAttentionWithAttention(nn.Module):
         self.n_head = n_head
 
     def forward(self, q_in, k_in, v_in):
+"""
+                Forward.
+        
+                Args:
+                    q_in: Q in.
+                    k_in: K in.
+                    v_in: V in.
+                """
         b, t, c = q_in.size()
         _, t_mem, _ = k_in.size()
 
@@ -471,6 +544,17 @@ class TransformerDecoderLayerWithAttention(nn.Module):
     """A Transformer decoder that returns the attentions."""
 
     def __init__(
+"""
+                Initialize the instance.
+        
+                Args:
+                    d_model: D model.
+                    nhead: Nhead.
+                    dim_feedforward: Dim feedforward.
+                    dropout: Dropout.
+                    activation: Activation.
+                    layer_norm_eps: Layer norm eps.
+                """
         self,
         d_model,
         nhead,
@@ -496,6 +580,13 @@ class TransformerDecoderLayerWithAttention(nn.Module):
         self.activation = activation
 
     def forward(self, tgt, memory):
+"""
+                Forward.
+        
+                Args:
+                    tgt: Tgt.
+                    memory: Memory.
+                """
         x = tgt
         tmp, _ = self.self_attn(x, x, x)
         x = self.norm1(x + self.dropout1(tmp))
@@ -511,12 +602,27 @@ class TransformerDecoderWithAttention(nn.Module):
     """A Transformer decoder that returns the attentions."""
 
     def __init__(self, layers, num_layers, norm=None):
+"""
+                Initialize the instance.
+        
+                Args:
+                    layers: Layers.
+                    num_layers: Num layers.
+                    norm: Norm.
+                """
         super().__init__()
         self.layers = nn.ModuleList([copy.deepcopy(layers) for i in range(num_layers)])
         self.num_layers = num_layers
         self.norm = norm
 
     def forward(self, queries, memory):
+"""
+                Forward.
+        
+                Args:
+                    queries: Queries.
+                    memory: Memory.
+                """
         output = queries
         attentions = []
         for mod in self.layers:

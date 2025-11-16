@@ -1,3 +1,7 @@
+"""
+Pdm proposal implementation.
+"""
+
 from dataclasses import dataclass
 from typing import List
 
@@ -81,14 +85,20 @@ class PDMProposalManager:
 
     @property
     def num_lateral_proposals(self) -> int:
+        """
+        Num lateral proposals."""
         return self._num_lateral_proposals
 
     @property
     def num_longitudinal_proposals(self) -> int:
+        """
+        Num longitudinal proposals."""
         return self._longitudinal_policies._num_longitudinal_proposals
 
     @property
     def max_target_velocity(self) -> float:
+        """
+        Max target velocity."""
         return self._longitudinal_policies.max_target_velocity
 
     @property

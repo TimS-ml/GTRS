@@ -8,16 +8,40 @@
 #   https://github.com/rwightman/pytorch-image-models/tree/master/timm/layers/mlp.py
 
 
+"""
+Multi-layer perceptron implementations.
+"""
+
 from typing import Callable, Optional
 
 from torch import Tensor, nn
 
 
 class Mlp(nn.Module):
+    """
+    Mlp.
+    """
     def __init__(
         self,
         in_features: int,
+        """
+        Initialize the instance.
+        
+        Args:
+            in_features: In features.
+            hidden_features: Hidden features.
+            out_features: Out features.
+            act_layer: Act layer.
+            drop: Drop.
+            bias: Bias.
+        """
         hidden_features: Optional[int] = None,
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+        """
         out_features: Optional[int] = None,
         act_layer: Callable[..., nn.Module] = nn.GELU,
         drop: float = 0.0,

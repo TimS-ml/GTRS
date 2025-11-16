@@ -1,3 +1,9 @@
+"""
+Common data structures and utilities.
+
+This module provides data loading utilities used throughout NAVSIM.
+"""
+
 from __future__ import annotations
 
 import lzma
@@ -75,6 +81,14 @@ def filter_scenes(data_path: Path, scene_filter: SceneFilter) -> Tuple[Dict[str,
 
 def filter_synthetic_scenes(
     data_path: Path, scene_filter: SceneFilter, stage1_scenes_final_frames_tokens: List[str]
+    """
+    Filter synthetic scenes.
+    
+    Args:
+        data_path: Data path.
+        scene_filter: Scene filter.
+        stage1_scenes_final_frames_tokens: Stage1 scenes final frames tokens.
+    """
 ) -> Dict[str, Tuple[Path, str]]:
     # Load all the synthetic scenes that belong to the original scenes already loaded
     loaded_scenes: Dict[str, Tuple[Path, str, int]] = {}

@@ -1,3 +1,7 @@
+"""
+Pdm scorer implementation.
+"""
+
 import copy
 import os
 from dataclasses import dataclass
@@ -40,6 +44,9 @@ from navsim.planning.simulation.planner.pdm_planner.utils.pdm_path import PDMPat
 
 @dataclass
 class PDMScorerConfig:
+    """
+    Configuration for P D M Scorer.
+    """
 
     # weighted metric weights
     progress_weight: float = 5.0
@@ -62,6 +69,8 @@ class PDMScorerConfig:
 
     # human flag
     human_penalty_filter: Optional[bool] = None
+        """
+        Weighted metrics array."""
 
     @property
     def weighted_metrics_array(self) -> npt.NDArray[np.float64]:

@@ -1,0 +1,4 @@
+"""
+Scene Filter package initialization.
+"""
+

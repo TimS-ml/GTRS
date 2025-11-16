@@ -1,3 +1,7 @@
+"""
+Constant velocity behavior policy for traffic agents.
+"""
+
 from typing import List
 
 import numpy as np
@@ -21,6 +25,12 @@ class ConstantVelocityTrafficAgents(AbstractTrafficAgentsPolicy):
     """Naive background traffic agents with constant velocity and constant heading."""
 
     def __init__(self, future_trajectory_sampling: TrajectorySampling):
+        """
+        Initialize the instance.
+        
+        Args:
+            future_trajectory_sampling: Future trajectory sampling.
+        """
         self.future_trajectory_sampling = future_trajectory_sampling
 
     def get_list_of_simulated_object_types(self) -> List[TrackedObjectType]:

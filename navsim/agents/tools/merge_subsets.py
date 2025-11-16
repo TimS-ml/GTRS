@@ -1,3 +1,7 @@
+"""
+Utilities for merging data subsets.
+"""
+
 import os
 import pickle
 

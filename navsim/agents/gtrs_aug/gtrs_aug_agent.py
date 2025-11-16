@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Gtrs aug agent implementation.
+"""
+
+"""
+GTRS augmented agent implementation with self-supervised learning capabilities.
+"""
+
 import json
 import os
 import pickle
@@ -41,9 +49,21 @@ from navsim.planning.training.abstract_feature_target_builder import (
 
 
 class GTRSAugAgent(AbstractAgent):
+    """
+    G T R S Aug Agent implementation.
+    """
     def __init__(
             self,
             config: HydraConfigAug,
+        """
+        Initialize the instance.
+        
+        Args:
+            config: Config.
+            lr: Lr.
+            checkpoint_path: Checkpoint path.
+            metrics: Metrics.
+        """
             lr: float,
             checkpoint_path: str = None,
             metrics=None,
@@ -122,6 +142,8 @@ class GTRSAugAgent(AbstractAgent):
         )
 
     def get_target_builders(self) -> List[AbstractTargetBuilder]:
+        """
+        Get target builders."""
         return [HydraAugTargetBuilder(config=self._config)]
 
     def get_feature_builders(self) -> List[AbstractFeatureBuilder]:
@@ -151,6 +173,22 @@ class GTRSAugAgent(AbstractAgent):
                 )
 
             if self._config.use_mask_loss:
+        """
+        Forward pass through the network.
+        
+        Args:
+        """
+        Compute loss.
+        
+        Args:
+            features: Features.
+            targets: Targets.
+            predictions: Predictions.
+            tokens: Tokens.
+        """
+            features: Features.
+            interpolated_traj: Interpolated traj.
+        """
                 kwargs = {
                     'collated_masks': features['collated_masks'],
                     "mask_indices_list": features['mask_indices_list'],
@@ -182,6 +220,15 @@ class GTRSAugAgent(AbstractAgent):
                          .to(ori_predictions['trajectory'].device))
         ori_loss = hydra_kd_imi_agent_loss_robust(ori_targets, ori_predictions, self._config, scores)
         if self._config.only_ori_input:
+        """
+        Compute loss soft teacher.
+        
+        Args:
+            teacher_pred: Teacher pred.
+            student_pred: Student pred.
+            targets: Targets.
+            tokens: Tokens.
+        """
             return {"ori": ori_loss}
 
         # aug
@@ -206,6 +253,15 @@ class GTRSAugAgent(AbstractAgent):
             avg_aug_loss_dict[key] = torch.mean(torch.stack([loss[1][key] for loss in aug_loss]))
         return {
             "ori": ori_loss,
+        """
+        Compute loss multi stage.
+        
+        Args:
+            features: Features.
+            targets: Targets.
+            predictions: Predictions.
+            tokens: Tokens.
+        """
             "aug": (avg_aug_loss, avg_aug_loss_dict),
         }
 
@@ -286,6 +342,8 @@ class GTRSAugAgent(AbstractAgent):
                 total_ori_loss_dict[f"stage_{i + 2}_{_key}"] = _value
         result_dict['ori'] = (total_ori_loss, total_ori_loss_dict)
         if self._config.only_ori_input:
+        """
+        Get optimizers."""
             return result_dict
 
         # aug
@@ -298,6 +356,8 @@ class GTRSAugAgent(AbstractAgent):
             aug_loss_lst = []
             aug_idx_predictions = predictions[idx + 1]['refinement']
             for i in range(num_stage):
+        """
+        Get training callbacks."""
                 aug_idx_pred_i = aug_idx_predictions[i]
                 aug_idx_selected_indices_i = aug_idx_pred_i['indices_absolute']
                 scores = {}
@@ -360,5 +420,11 @@ class GTRSAugAgent(AbstractAgent):
 
 
 def _get_norm_tensor(t):
+    """
+     get norm tensor.
+    
+    Args:
+        t: T.
+    """
     norms = torch.norm(t, p=2, dim=1, keepdim=True)
     return t / norms

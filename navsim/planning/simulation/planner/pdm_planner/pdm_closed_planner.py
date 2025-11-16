@@ -1,3 +1,7 @@
+"""
+Pdm closed planner implementation.
+"""
+
 import gc
 import logging
 import warnings

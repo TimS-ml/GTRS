@@ -1,3 +1,7 @@
+"""
+Navsim idm agents builder implementation.
+"""
+
 import logging
 from typing import List, Tuple
 

@@ -1,3 +1,7 @@
+"""
+Intelligent Driver Model (IDM) policy for traffic agents.
+"""
+
 from copy import deepcopy
 from typing import List, Optional
 
@@ -23,6 +27,14 @@ from navsim.traffic_agents_policies.abstract_traffic_agents_policy import (
 
 def build_ego_state_from_simulated_ego_states(
     ego_state_arr: npt.NDArray[np.float64],
+    """
+    Build ego state from simulated ego states.
+    
+    Args:
+        ego_state_arr: Ego state arr.
+        initial_ego_state: Initial ego state.
+        time_point: Time point.
+    """
     initial_ego_state: EgoState,
     time_point: TimePoint,
 ) -> EgoState:
@@ -59,6 +71,9 @@ def build_ego_state_from_simulated_ego_states(
 
 
 class NavsimIDMTrafficAgents(AbstractTrafficAgentsPolicy):
+    """
+    Navsim I D M Traffic Agents implementation.
+    """
     def __init__(
         self,
         future_trajectory_sampling: TrajectorySampling,

@@ -1,7 +1,25 @@
+"""
+General utility functions for GTRS augmented agent.
+"""
+
 import numpy as np
 
 class CosineScheduler(object):
+    """
+    Cosine Scheduler.
+    """
     def __init__(self, base_value, final_value, total_iters, warmup_iters=0, start_warmup_value=0, freeze_iters=0):
+        """
+        Initialize the instance.
+        
+        Args:
+            base_value: Base value.
+            final_value: Final value.
+            total_iters: Total iters.
+            warmup_iters: Warmup iters.
+            start_warmup_value: Start warmup value.
+            freeze_iters: Freeze iters.
+        """
         super().__init__()
         self.final_value = final_value
         self.total_iters = total_iters

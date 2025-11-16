@@ -1,3 +1,7 @@
+"""
+Planner builder implementation.
+"""
+
 from typing import List, Optional, Type, cast
 
 from hydra._internal.utils import _locate

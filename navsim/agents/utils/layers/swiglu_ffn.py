@@ -3,6 +3,10 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
+"""
+SwiGLU feed-forward network.
+"""
+
 import os
 from typing import Callable, Optional
 import warnings
@@ -12,9 +16,23 @@ import torch.nn.functional as F
 
 
 class SwiGLUFFN(nn.Module):
+    """
+    Swi G L U F F N.
+    """
     def __init__(
         self,
         in_features: int,
+        """
+        Initialize the instance.
+        
+        Args:
+            in_features: In features.
+            hidden_features: Hidden features.
+            out_features: Out features.
+            act_layer: Act layer.
+            drop: Drop.
+            bias: Bias.
+        """
         hidden_features: Optional[int] = None,
         out_features: Optional[int] = None,
         act_layer: Callable[..., nn.Module] = None,
@@ -42,6 +60,17 @@ try:
         XFORMERS_AVAILABLE = True
         warnings.warn("xFormers is available (SwiGLU)")
     else:
+        """
+        Initialize the instance.
+        
+        Args:
+            in_features: In features.
+            hidden_features: Hidden features.
+            out_features: Out features.
+            act_layer: Act layer.
+            drop: Drop.
+            bias: Bias.
+        """
         warnings.warn("xFormers is disabled (SwiGLU)")
         raise ImportError
 except ImportError:
@@ -52,6 +81,9 @@ except ImportError:
 
 
 class SwiGLUFFNFused(SwiGLU):
+    """
+    Swi G L U F F N Fused.
+    """
     def __init__(
         self,
         in_features: int,

@@ -1,3 +1,7 @@
+"""
+Pdm object manager implementation.
+"""
+
 import copy
 from typing import Dict, Tuple
 

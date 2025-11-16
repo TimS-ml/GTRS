@@ -1,15 +1,25 @@
+"""
+Setup configuration for NavSim package.
+
+This script handles the installation and configuration of the NavSim package,
+a data-driven non-reactive autonomous vehicle simulation and benchmarking framework.
+It defines package metadata, dependencies, and installation requirements.
+"""
+
 import os
 
 import setuptools
 
-# Change directory to allow installation from anywhere
+# Change directory to the script's location to allow installation from anywhere
+# This ensures relative paths work correctly regardless of where setup.py is invoked
 script_folder = os.path.dirname(os.path.realpath(__file__))
 os.chdir(script_folder)
 
+# Read package dependencies from requirements.txt file
 with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
-# Installs
+# Configure and install the NavSim package
 setuptools.setup(
     name="navsim",
     version="2.0.0",

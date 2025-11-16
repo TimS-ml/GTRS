@@ -1,3 +1,7 @@
+"""
+Navsim idm agents implementation.
+"""
+
 import hashlib
 import uuid
 from typing import Dict, List, Optional

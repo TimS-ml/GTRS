@@ -1,4 +1,8 @@
 # TODO: Move & rename this file for common usage (not specific for PDM)
+"""
+Pdm occupancy map implementation.
+"""
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Tuple, Type
@@ -98,9 +102,21 @@ class PDMOccupancyMap:
 
 
 class PDMDrivableMap(PDMOccupancyMap):
+    """
+    P D M Drivable Map.
+    """
     def __init__(
         self,
         tokens: List[str],
+        """
+        Initialize the instance.
+        
+        Args:
+            tokens: Tokens.
+            map_types: Map types.
+            geometries: Geometries.
+            node_capacity: Node capacity.
+        """
         map_types: List[SemanticMapLayer],
         geometries: npt.NDArray[np.object_],
         node_capacity: int = 10,
@@ -140,6 +156,12 @@ class PDMDrivableMap(PDMOccupancyMap):
 
         # query all drivable map elements around ego position
         position: Point2D = ego_state.center.point
+            """
+            Extract map layer.
+            
+            Args:
+                map_objects: Map objects.
+            """
         drivable_area = map_api.get_proximal_map_objects(position, map_radius, roadblock_layers + drivable_map_layers)
 
         # collect lane polygons in list, save on-route indices

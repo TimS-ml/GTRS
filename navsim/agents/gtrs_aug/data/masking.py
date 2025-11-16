@@ -3,12 +3,19 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
+"""
+Masking strategies for self-supervised learning in GTRS augmented agent.
+"""
+
 import random
 import math
 import numpy as np
 
 
 class MaskingGenerator:
+    """
+    Masking Generator.
+    """
     def __init__(
         self,
         input_size,
@@ -18,7 +25,20 @@ class MaskingGenerator:
         min_aspect=0.3,
         max_aspect=None,
     ):
+        """
+        Initialize the instance.
+        
+        Args:
+            input_size: Input size.
+            num_masking_patches: Num masking patches.
+            min_num_patches: Min num patches.
+            max_num_patches: Max num patches.
+            min_aspect: Min aspect.
+            max_aspect: Max aspect.
+        """
         if not isinstance(input_size, tuple):
+        """
+        Return detailed string representation."""
             input_size = (input_size,) * 2
         self.height, self.width = input_size
 
@@ -32,6 +52,8 @@ class MaskingGenerator:
         self.log_aspect_ratio = (math.log(min_aspect), math.log(max_aspect))
 
     def __repr__(self):
+        """
+        Get shape."""
         repr_str = "Generator(%d, %d -> [%d ~ %d], max = %d, %.3f ~ %.3f)" % (
             self.height,
             self.width,
@@ -54,6 +76,12 @@ class MaskingGenerator:
             h = int(round(math.sqrt(target_area * aspect_ratio)))
             w = int(round(math.sqrt(target_area / aspect_ratio)))
             if w < self.width and h < self.height:
+        """
+        Make the instance callable.
+        
+        Args:
+            num_masking_patches: Num masking patches.
+        """
                 top = random.randint(0, self.height - h)
                 left = random.randint(0, self.width - w)
 

@@ -1,3 +1,7 @@
+"""
+Bfs roadblock implementation.
+"""
+
 from collections import deque
 from typing import Dict, List, Optional, Tuple, Union
 

@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Run training aug implementation.
+"""
+
+"""
+Run training aug implementation.
+"""
+
 import datetime
 import logging
 from functools import partial
@@ -109,6 +117,14 @@ def build_datasets(cfg: DictConfig, agent: AbstractAgent) -> Tuple[DatasetAug, D
 
 
 def build_dataloaders(train_data, val_data, cfg):
+    """
+    Build dataloaders.
+    
+    Args:
+        train_data: Train data.
+        val_data: Val data.
+        cfg: Cfg.
+    """
     agent_cfg: HydraConfigAug = cfg.agent.config
 
     if not agent_cfg.use_mask_loss:
@@ -134,8 +150,22 @@ def build_dataloaders(train_data, val_data, cfg):
         logger.info("Building Datasets")
         train_dataloader = DataLoader(train_data, **cfg.dataloader.params, shuffle=True, collate_fn=collate_fn)
         logger.info("Num training samples: %d", len(train_data))
+    """
+    Build model.
+    
+    Args:
+        config: Config.
+        only_teacher: Only teacher.
+    """
         val_dataloader = DataLoader(val_data, **cfg.dataloader.params, shuffle=False, collate_fn=collate_fn)
         logger.info("Num validation samples: %d", len(val_data))
+    """
+    Build model from cfg.
+    
+    Args:
+        cfg: Cfg.
+        only_teacher: Only teacher.
+    """
         return train_dataloader, val_dataloader
 
 

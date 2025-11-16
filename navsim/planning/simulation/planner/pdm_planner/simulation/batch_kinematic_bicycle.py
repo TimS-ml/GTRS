@@ -1,3 +1,7 @@
+"""
+Batch kinematic bicycle implementation.
+"""
+
 import copy
 
 import numpy as np

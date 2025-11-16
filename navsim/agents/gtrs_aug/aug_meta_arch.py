@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Aug meta arch implementation.
+"""
+
+"""
+Meta-architecture for GTRS augmented self-supervised learning.
+"""
+
 import logging
 
 import torch
@@ -24,7 +32,18 @@ logger = logging.getLogger("aug_meta_arch")
 
 
 class AugMetaArch(nn.Module):
+    """
+    Aug Meta Arch.
+    """
     def __init__(self, cfg: HydraConfigAug, teacher_model, student_model):
+        """
+        Initialize the instance.
+        
+        Args:
+            cfg: Cfg.
+            teacher_model: Teacher model.
+            student_model: Student model.
+        """
         super().__init__()
         self.cfg = cfg
         self.fp16_scaler = None
@@ -36,6 +55,12 @@ class AugMetaArch(nn.Module):
         teacher_model_dict["model"] = student_model
         embed_dim = teacher_model._backbone.img_feat_c
         logger.info(f"OPTIONS -- architecture : embed_dim: {embed_dim}")
+        """
+        Backprop loss.
+        
+        Args:
+            loss: Loss.
+        """
 
         self.embed_dim = embed_dim
         self.student = nn.ModuleDict(student_model_dict)
@@ -43,6 +68,13 @@ class AugMetaArch(nn.Module):
 
         # there is no backpropagation through the teacher, so no need for gradients
         for p in self.teacher.parameters():
+        """
+        Forward pass through the network.
+        
+        Args:
+            teacher_ori_features: Teacher ori features.
+            student_feat_dict_lst: Student feat dict lst.
+        """
             p.requires_grad = False
         logger.info(f"Student and Teacher are built: they are both {type(self.student.model)} network.")
 
@@ -75,11 +107,23 @@ class AugMetaArch(nn.Module):
             if self.cfg.inference.model == "teacher":
                 teacher_pred = self.teacher.model(teacher_ori_features, **kwargs)
             else:
+        """
+        Update teacher.
+        
+        Args:
+            m: M.
+        """
                 teacher_pred = self.student.model(teacher_ori_features, **kwargs)
         if not self.cfg.training:
             return teacher_pred, [], {}
 
         if self.cfg.lab.optimize_prev_frame_traj_for_ec:
+        """
+        Train.
+        
+        Args:
+            mode: Mode.
+        """
             teacher_pred = {'cur': teacher_pred}
             teacher_prev_feat = {
                 'camera_feature': [teacher_ori_features['camera_feature'][-2], ],

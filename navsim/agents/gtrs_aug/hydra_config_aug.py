@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Hydra config aug implementation.
+"""
+
+"""
+Configuration for Hydra model in GTRS augmented agent.
+"""
+
 import os
 from dataclasses import dataclass
 from typing import Tuple
@@ -28,21 +36,33 @@ NAVSIM_DEVKIT_ROOT = os.environ.get("NAVSIM_DEVKIT_ROOT")
 
 @dataclass
 class InferConfig:
+    """
+    Configuration for Infer.
+    """
     model: str = "teacher"  # teacher or student
     use_aug: bool = True  # whether using teacher augmentation
 
 
 @dataclass
 class RotationConfig:
+    """
+    Configuration for Rotation.
+    """
     enable: bool = False
     fixed_angle: float = 0  # degree, positive: turn left
     offline_aug_angle_boundary: float = 0
+    """
+    Configuration for V A.
+    """
     change_camera: bool = False
     crop_from_panoramic: bool = False
 
 
 @dataclass
 class VAConfig:
+    """
+    Configuration for Ego Perturb.
+    """
     # vel and acc perturb
     enable: bool = False
     offline_aug_boundary: float = 0
@@ -50,6 +70,9 @@ class VAConfig:
 
 @dataclass
 class EgoPerturbConfig:
+    """
+    Configuration for Camera Problem.
+    """
     mode: str = 'fixed'  # 'fixed' or 'load_from_offline'
     ensemble_aug: bool = False
     offline_aug_file: str = '???'
@@ -69,6 +92,9 @@ class CameraProblemConfig:
     gaussian_enable: bool = False
     gaussian_mode: str = 'random'  # random or load_from_offline
     gaussian_probability: float = 0.0  # probability of applying gaussian noise to an image
+    """
+    Configuration for Dino.
+    """
     gaussian_mean: float = 0.0  # mean of gaussian noise
     gaussian_min_std: float = 0.05  # minimum std when using random std
     gaussian_max_std: float = 0.25  # maximum std when using random std
@@ -76,6 +102,9 @@ class CameraProblemConfig:
 
     # Weather augmentation settings
     weather_enable: bool = False
+    """
+    Configuration for Ibot.
+    """
     weather_aug_mode: str = 'random'  # random or load_from_offline
     fog_prob: float = 0.2  # probability of applying fog effect
     rain_prob: float = 0.2  # probability of applying rain effect
@@ -85,6 +114,9 @@ class CameraProblemConfig:
 @dataclass
 class DinoConfig:
     loss_weight: float = 1.0
+    """
+    Configuration for Refinement.
+    """
     head_n_prototypes: int = 65536
     head_bottleneck_dim: int = 256
     head_nlayers: int = 3
@@ -99,6 +131,9 @@ class IbotConfig:
     mask_ratio_min_max: Tuple[float, float] = (0.1, 0.5)
     separate_head: bool = True
     head_n_prototypes: int = 65536
+    """
+    Configuration for Lab.
+    """
     head_bottleneck_dim: int = 256
     head_nlayers: int = 3
     head_hidden_dim: int = 2048
@@ -118,6 +153,9 @@ class RefinementConfig:
     use_separate_stage_heads: bool = True
 
     traj_expansion_in_infer: bool = False
+    """
+    Configuration for Hydra  Aug.
+    """
     n_total_traj: int = 1024
 
 
@@ -300,7 +338,11 @@ class HydraConfigAug(TransfuserConfig):
 
     # robust setting
     training: bool = True
+        """
+        Bev semantic frame."""
     ego_perturb: EgoPerturbConfig = EgoPerturbConfig()
+        """
+        Bev radius."""
     camera_problem: CameraProblemConfig = CameraProblemConfig()
     only_ori_input: bool = False  # 如果是 True，说明是原来的训练设置
     student_rotation_ensemble: int = 3

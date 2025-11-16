@@ -1,3 +1,7 @@
+"""
+Pdm and traffic scorer implementation.
+"""
+
 from copy import deepcopy
 from typing import List, Tuple
 
@@ -31,7 +35,16 @@ from navsim.traffic_agents_policies.abstract_traffic_agents_policy import (
 
 
 class PaddingTrackedObject:
+    """
+    Padding Tracked Object.
+    """
     def __init__(self, track_token):
+        """
+        Initialize the instance.
+        
+        Args:
+            track_token: Track token.
+        """
         self.track_token = track_token
         self.box = OrientedBox(
             center=StateSE2(x=np.inf, y=np.inf, heading=0),
@@ -45,6 +58,9 @@ class PaddingTrackedObject:
 
 
 class PDMTrafficScorer(PDMScorer):
+    """
+    P D M Traffic Scorer for evaluation.
+    """
     def __init__(
         self,
         proposal_sampling: TrajectorySampling,
@@ -94,6 +110,12 @@ class PDMTrafficScorer(PDMScorer):
     def build_ego_tracked_object_states(
         self,
         states: npt.NDArray[np.float64],
+        """
+        Build ego tracked object states.
+        
+        Args:
+            states: States.
+        """
     ) -> List[Agent]:
         vehicle_parameters = get_pacifica_parameters()
         return [
@@ -120,7 +142,35 @@ class PDMTrafficScorer(PDMScorer):
     def build_agent_centric_observation(
         self,
         observation: PDMObservation,
+        """
+        Build agent centric observation.
+        
+        Args:
+            observation: Observation.
+            traffic_agent_detections_tracks: Traffic agent detections tracks.
+        """
+        Build ego centric observation.
+        
+        Args:
+            observation: Observation.
+            traffic_agent_detections_tracks: Traffic agent detections tracks.
+        """
+            ego_tracked_objects: Ego tracked objects.
+            agent_token: Agent token.
+        """
         traffic_agent_detections_tracks: List[DetectionsTracks],
+        """
+        Score proposals.
+        
+        Args:
+            states: States.
+            observation: Observation.
+            centerline: Centerline.
+            route_lane_ids: Route lane ids.
+            drivable_area_map: Drivable area map.
+            map_parameters: Map parameters.
+            simulated_agent_detections_tracks: Simulated agent detections tracks.
+        """
         ego_tracked_objects: List[Agent],
         agent_token: str,
     ) -> PDMObservation:

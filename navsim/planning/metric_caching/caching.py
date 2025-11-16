@@ -1,3 +1,7 @@
+"""
+Caching implementation.
+"""
+
 import gc
 import logging
 import os
@@ -39,6 +43,19 @@ def cache_scenarios(args: List[Dict[str, Union[List[str], DictConfig]]]) -> List
     #
     # This is necessary to save memory when running on large datasets.
     def cache_scenarios_internal(args: List[Dict[str, Union[Path, DictConfig]]]) -> List[CacheResult]:
+        """
+        Cache scenarios internal.
+        
+        Args:
+            """
+            Cache single scenario.
+            
+            Args:
+                scene_dict: Scene dict.
+                processor: Processor.
+            """
+            args: Args.
+        """
         def cache_single_scenario(
             scene_dict: Dict[str, Any], processor: MetricCacheProcessor
         ) -> Optional[CacheMetadataEntry]:
@@ -59,6 +76,13 @@ def cache_scenarios(args: List[Dict[str, Union[List[str], DictConfig]]]) -> List
 
         def cache_single_synthetic_scenario(
             scene_path: Path, processor: MetricCacheProcessor
+            """
+            Cache single synthetic scenario.
+            
+            Args:
+                scene_path: Scene path.
+                processor: Processor.
+            """
         ) -> Optional[CacheMetadataEntry]:
             scene = Scene.load_from_disk(scene_path, None, SensorConfig.build_no_sensors())
             scenario = NavSimScenario(scene, map_root=os.environ["NUPLAN_MAPS_ROOT"], map_version="nuplan-maps-v1.0")

@@ -1,3 +1,9 @@
+"""
+Evaluation metrics and scoring.
+
+This module implements scoring and evaluation functions for agent evaluation.
+"""
+
 import time
 from typing import List
 
@@ -209,6 +215,17 @@ def pdm_score_from_interpolated_trajectory(
 
 def pdm_score_full_v2(
     metric_cache: MetricCache,
+    """
+    Pdm score full v2.
+    
+    Args:
+        metric_cache: Metric cache.
+        vocab_trajectories: Vocab trajectories.
+        future_sampling: Future sampling.
+        simulator: Simulator.
+        scorer: Scorer.
+        traffic_agents_policy: Traffic agents policy.
+    """
     vocab_trajectories: Trajectory,
     future_sampling: TrajectorySampling,
     simulator: PDMSimulator,

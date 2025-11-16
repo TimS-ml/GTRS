@@ -5,6 +5,10 @@
 
 # Modified from: https://github.com/huggingface/pytorch-image-models/blob/main/timm/models/vision_transformer.py#L103-L110
 
+"""
+Layer scale normalization.
+"""
+
 from typing import Union
 
 import torch
@@ -13,9 +17,26 @@ from torch import nn
 
 
 class LayerScale(nn.Module):
+    """
+    Layer Scale neural network component.
+    """
     def __init__(
         self,
         dim: int,
+        """
+        Initialize the instance.
+        
+        Args:
+            dim: Dim.
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+        """
+            init_values: Init values.
+            inplace: Inplace.
+        """
         init_values: Union[float, Tensor] = 1e-5,
         inplace: bool = False,
     ) -> None:

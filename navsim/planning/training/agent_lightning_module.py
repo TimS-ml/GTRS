@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Agent lightning module implementation.
+"""
+
+"""
+Agent lightning module implementation.
+"""
+
 import os
 import pickle
 import traceback
@@ -104,11 +112,25 @@ class AgentLightningModule(pl.LightningModule):
     def predict_step(
             self,
             batch: Tuple[Dict[str, Tensor], Dict[str, Tensor]],
+        """
+        Predict step.
+        
+        Args:
+            batch: Batch.
+            batch_idx: Batch idx.
+        """
             batch_idx: int
     ):
         if self.combined:
             return self.predict_step_combined(batch, batch_idx)
         if isinstance(self.agent, GTRSAgent):
+        """
+        Predict step dp traj.
+        
+        Args:
+            batch: Batch.
+            batch_idx: Batch idx.
+        """
             return self.predict_step_hydra(batch, batch_idx)
         elif isinstance(self.agent, DPAgent):
             return self.predict_step_dp_traj(batch, batch_idx)
@@ -174,6 +196,13 @@ class AgentLightningModule(pl.LightningModule):
             # randomly choose a dp proposal
             final_pose = proposals[0]
             if final_pose.shape[0] == 40:
+        """
+        Predict step hydra.
+        
+        Args:
+            batch: Batch.
+            batch_idx: Batch idx.
+        """
                 interval_length = 0.1
             else:
                 interval_length = 0.5
@@ -233,6 +262,13 @@ class AgentLightningModule(pl.LightningModule):
                     lane_keeping_all,
                     traffic_light_compliance_all,
                     tokens):
+        """
+        Predict step combined.
+        
+        Args:
+            batch: Batch.
+            not_used: Not used.
+        """
             result[token] = {
                 'trajectory': Trajectory(pose, TrajectorySampling(time_horizon=4, interval_length=interval_length)),
                 'imi': imi,

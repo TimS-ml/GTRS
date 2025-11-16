@@ -1,3 +1,7 @@
+"""
+VoV (Vortex of Vortex) backbone network architecture for visual feature extraction.
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -153,7 +157,35 @@ def conv1x1(in_channels, out_channels, module_name, postfix, stride=1, groups=1,
 
 
 class Hsigmoid(nn.Module):
+    """
+    Hsigmoid.
+    """
     def __init__(self, inplace=True):
+        """
+        Initialize the instance.
+        
+        Args:
+        """
+        Forward pass through the network.
+        
+        Args:
+        """
+        Initialize the instance.
+        
+        Args:
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+        """
+            channel: Channel.
+            reduction: Reduction.
+        """
+            x: X.
+        """
+            inplace: Inplace.
+        """
         super(Hsigmoid, self).__init__()
         self.inplace = inplace
 
@@ -162,6 +194,9 @@ class Hsigmoid(nn.Module):
 
 
 class eSEModule(nn.Module):
+    """
+    e S E Module.
+    """
     def __init__(self, channel, reduction=4):
         super(eSEModule, self).__init__()
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
@@ -177,6 +212,9 @@ class eSEModule(nn.Module):
 
 
 class _OSA_module(nn.Module):
+    """
+    _ O S A_module.
+    """
     def __init__(self, in_ch, stage_ch, concat_ch, layer_per_block, module_name, SE=False, identity=False, depthwise=False, with_cp=False):
         super(_OSA_module, self).__init__()
         self.with_cp = with_cp
@@ -197,6 +235,12 @@ class _OSA_module(nn.Module):
             if self.depthwise:
                 self.layers.append(nn.Sequential(OrderedDict(dw_conv3x3(stage_ch, stage_ch, module_name, i))))
             else:
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+        """
                 self.layers.append(nn.Sequential(OrderedDict(conv3x3(in_channel, stage_ch, module_name, i))))
             in_channel = stage_ch
 
@@ -207,6 +251,20 @@ class _OSA_module(nn.Module):
         self.ese = eSEModule(concat_ch)
 
     def _forward(self, x):
+        """
+        Initialize the instance.
+        
+        Args:
+            in_ch: In ch.
+            stage_ch: Stage ch.
+            concat_ch: Concat ch.
+            block_per_stage: Block per stage.
+            layer_per_block: Layer per block.
+            stage_num: Stage num.
+            SE: Se.
+            depthwise: Depthwise.
+            with_cp: With cp.
+        """
         identity_feat = x
 
         output = []
@@ -230,6 +288,9 @@ class _OSA_module(nn.Module):
         return xt
 
     def forward(self, x):
+    """
+    _ O S A_stage.
+    """
         if self.with_cp and self.training and x.requires_grad:
             return cp.checkpoint(self._forward, x)
         else:
@@ -271,6 +332,9 @@ class _OSA_stage(nn.Sequential):
 
 
 class VoVNet(torch.nn.Module):
+    """
+    Vo V Net.
+    """
     def __init__(self, spec_name,
                  input_ch=3,
                  out_features=None,
@@ -281,8 +345,16 @@ class VoVNet(torch.nn.Module):
                  init_cfg=None):
         """
         Args:
+        """
+         initialize weights."""
             input_ch(int) : the number of input channel
             out_features (list[str]): name of the layers whose outputs should
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+        """
                 be returned in forward. Can be anything in "stem", "stage2" ...
         """
         super(VoVNet, self).__init__()
@@ -310,6 +382,8 @@ class VoVNet(torch.nn.Module):
         self.add_module("stem", nn.Sequential((OrderedDict(stem))))
         current_stirde = 4
         self._out_feature_strides = {"stem": current_stirde, "stage2": current_stirde}
+        """
+         freeze stages."""
         self._out_feature_channels = {"stem": stem_ch[2]}
 
         stem_out_ch = [stem_ch[2]]

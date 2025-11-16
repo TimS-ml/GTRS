@@ -1,3 +1,7 @@
+"""
+Bird's-eye-view (BEV) visualization utilities.
+"""
+
 from typing import Any, Dict, List
 
 import matplotlib.pyplot as plt

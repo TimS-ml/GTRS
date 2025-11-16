@@ -1,3 +1,7 @@
+"""
+Positional encoding implementations for transformers.
+"""
+
 import math
 
 import torch
@@ -37,6 +41,18 @@ class SinePositionalEncoding3D(BaseModule):
                  eps=1e-6,
                  offset=0.,
                  init_cfg=None):
+        """
+        Initialize the instance.
+        
+        Args:
+            num_feats: Num feats.
+            temperature: Temperature.
+            normalize: Normalize.
+            scale: Scale.
+            eps: Eps.
+            offset: Offset.
+            init_cfg: Init cfg.
+        """
         super(SinePositionalEncoding3D, self).__init__(init_cfg)
         if normalize:
             assert isinstance(scale, (float, int)), 'when normalize is set,' \

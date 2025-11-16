@@ -1,3 +1,7 @@
+"""
+Navsim idm agent manager implementation.
+"""
+
 from typing import Dict, List, Optional
 
 import numpy as np

@@ -1,3 +1,7 @@
+"""
+Feature extraction for Transfuser agent.
+"""
+
 from enum import IntEnum
 from typing import Any, Dict, List, Tuple
 
@@ -86,6 +90,12 @@ class TransfuserFeatureBuilder(AbstractFeatureBuilder):
         # NOTE: Code from
         # https://github.com/autonomousvision/carla_garage/blob/main/team_code/data.py#L873
         def splat_points(point_cloud):
+            """
+            Splat points.
+            
+            Args:
+                point_cloud: Point cloud.
+            """
             # 256 x 256 grid
             xbins = np.linspace(
                 self._config.lidar_min_x,
@@ -373,6 +383,8 @@ class BoundingBox2DIndex(IntEnum):
 
     @classmethod
     def size(cls):
+        """
+        Size."""
         valid_attributes = [
             attribute
             for attribute in dir(cls)
@@ -383,31 +395,43 @@ class BoundingBox2DIndex(IntEnum):
     @classmethod
     @property
     def X(cls):
+        """
+        X."""
         return cls._X
 
     @classmethod
     @property
     def Y(cls):
+        """
+        Y."""
         return cls._Y
 
     @classmethod
     @property
     def HEADING(cls):
+        """
+        Heading."""
         return cls._HEADING
 
     @classmethod
     @property
     def LENGTH(cls):
+        """
+        Width."""
         return cls._LENGTH
 
     @classmethod
     @property
     def WIDTH(cls):
+        """
+        Point."""
         return cls._WIDTH
 
     @classmethod
     @property
     def POINT(cls):
+        """
+        State se2."""
         # assumes X, Y have subsequent indices
         return slice(cls._X, cls._Y + 1)
 

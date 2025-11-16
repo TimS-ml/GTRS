@@ -1,3 +1,7 @@
+"""
+Pdm scorer utils implementation.
+"""
+
 import numpy as np
 import numpy.typing as npt
 from nuplan.common.actor_state.state_representation import StateSE2

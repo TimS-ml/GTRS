@@ -1,3 +1,7 @@
+"""
+Attention mechanism utilities for agent models.
+"""
+
 from functools import partial
 
 import torch
@@ -10,6 +14,19 @@ from torch.utils.checkpoint import checkpoint
 # helper functions
 
 def exists(val):
+    """
+    Exists.
+    
+    Args:
+    """
+    Default.
+    
+    Args:
+        val: Val.
+        d: D.
+    """
+        val: Val.
+    """
     return val is not None
 
 
@@ -43,6 +60,19 @@ def attention(
 
     if causal:
         i, j = sim.shape[-2:]
+    """
+    Summarize qkv chunk.
+    
+    Args:
+        q: Q.
+        k: K.
+        v: V.
+        mask: Mask.
+        attn_bias_chunk: Attn bias chunk.
+        causal: Causal.
+        qk_start_indices: Qk start indices.
+        dropout: Dropout.
+    """
         mask = torch.ones(i, j, device=q.device, dtype=torch.bool).triu(j - i + 1)
         sim = sim.masked_fill(mask, mask_value)
 
@@ -67,6 +97,22 @@ def summarize_qkv_chunk(q, k, v, mask, attn_bias_chunk, causal, qk_start_indices
     mask_value = -torch.finfo(weight.dtype).max
 
     if exists(mask):
+    """
+    Memory efficient attention.
+    
+    Args:
+        q: Q.
+        k: K.
+        v: V.
+        mask: Mask.
+        causal: Causal.
+        attn_bias: Attn bias.
+        q_bucket_size: Q bucket size.
+        k_bucket_size: K bucket size.
+        eps: Eps.
+        dropout: Dropout.
+        training: Training.
+    """
         mask = rearrange(mask, 'b j -> b 1 1 j')
         weight = weight.masked_fill(~mask, mask_value)
 
@@ -177,6 +223,9 @@ def memory_efficient_attention(
 # main class
 
 class Attention(nn.Module):
+    """
+    Attention mechanism.
+    """
     def __init__(
             self,
             *,
@@ -215,6 +264,9 @@ class Attention(nn.Module):
             q_bucket_size=None,
             k_bucket_size=None,
     ):
+    """
+    Memory Eff Transformer for data transformation.
+    """
         memory_efficient = default(memory_efficient, self.memory_efficient)
         q_bucket_size = default(q_bucket_size, self.q_bucket_size)
         k_bucket_size = default(k_bucket_size, self.k_bucket_size)
@@ -226,6 +278,13 @@ class Attention(nn.Module):
         v = self.to_v(v)
 
         q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> b h n d', h=h), (q, k, v))
+        """
+        Forward pass through the network.
+        
+        Args:
+            x: X.
+            need_mean: Need mean.
+        """
 
         attn_fn = attention if not memory_efficient else memory_efficient_attention
 

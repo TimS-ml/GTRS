@@ -1,3 +1,7 @@
+"""
+Run create submission pickle implementation.
+"""
+
 import logging
 import os
 import pickle

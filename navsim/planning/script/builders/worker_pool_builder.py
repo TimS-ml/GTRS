@@ -1,3 +1,7 @@
+"""
+Worker pool builder implementation.
+"""
+
 import logging
 
 from hydra.utils import instantiate

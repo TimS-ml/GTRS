@@ -1,3 +1,7 @@
+"""
+Dataset implementation.
+"""
+
 import gzip
 import logging
 import os
@@ -134,9 +138,25 @@ class CacheOnlyDataset(torch.utils.data.Dataset):
 
 
 class Dataset(torch.utils.data.Dataset):
+    """
+    Dataset for data loading.
+    """
     def __init__(
         self,
         scene_loader: SceneLoader,
+        """
+        Initialize the instance.
+        
+        Args:
+            scene_loader: Scene loader.
+            feature_builders: Feature builders.
+            target_builders: Target builders.
+            cache_path: Cache path.
+            force_cache_computation: Force cache computation.
+            append_token_to_batch: Append token to batch.
+            agent_input_only: Agent input only.
+            is_training: Is training.
+        """
         feature_builders: List[AbstractFeatureBuilder],
         target_builders: List[AbstractTargetBuilder],
         cache_path: Optional[str] = None,

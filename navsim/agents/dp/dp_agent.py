@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Dp agent implementation.
+"""
+
+"""
+Dynamic Programming agent implementation for trajectory planning.
+"""
+
 import os
 from typing import Any, Union
 from typing import Dict
@@ -38,6 +46,15 @@ from navsim.planning.training.abstract_feature_target_builder import (
 
 def dp_loss_bev(
         targets: Dict[str, torch.Tensor], predictions: Dict[str, torch.Tensor],
+    """
+    Dp loss bev.
+    
+    Args:
+        targets: Targets.
+        predictions: Predictions.
+        config: Config.
+        traj_head: Traj head.
+    """
         config: DPConfig, traj_head
 ):
     # B, 8 (4 secs, 0.5Hz), 3
@@ -52,6 +69,9 @@ def dp_loss_bev(
     )
     return loss, {
         'dp_loss': dp_loss,
+    """
+    D P Agent implementation.
+    """
         'bev_semantic_loss': bev_semantic_loss
     }
 
@@ -98,12 +118,16 @@ class DPAgent(AbstractAgent):
         )
 
     def get_target_builders(self) -> List[AbstractTargetBuilder]:
+        """
+        Get target builders."""
         return [HydraTargetBuilder(config=self._config)]
 
     def get_feature_builders(self) -> List[AbstractFeatureBuilder]:
         return [HydraFeatureBuilder(config=self._config)]
 
     def forward(self, features: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+        """
+        Get optimizers."""
         return self.model(features)
 
     def compute_loss(
@@ -135,6 +159,8 @@ class DPAgent(AbstractAgent):
         ]
 
         if self.scheduler == 'default':
+        """
+        Get training callbacks."""
             return torch.optim.Adam(params_lr_dict, lr=self._lr, weight_decay=self._config.weight_decay)
         elif self.scheduler == 'cycle':
             optim = torch.optim.Adam(params_lr_dict, lr=self._lr)
